@@ -1,73 +1,33 @@
 <template>
   <div class="card">
     <div class="header">
-      <h4 class="title">Sign Up</h4>
+      <h4 class="title">ข้อมูลบุคคล</h4>
     </div>
     <div class="content">
       <form>
         <div class="row">
           <div class="col-md-4">
-            <label>First Name</label>
+            <label>อายุ</label>
             <input type="text" class="form-control border-input"
-                      placeholder="First Name"
-                      v-model="user.firstname">
+                      placeholder="Age"
+                      v-model="user.age">
             </input>
           </div>
         </div>
 
         <div class="row">
           <div class="col-md-4">
-            <label>Last Name</label>
+            <label>อาชีพ</label>
             <input type="text" class="form-control border-input"
-                      placeholder="Last Name"
-                      v-model="user.lastname">
-            </input>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4">
-            <label>Date of Birth</label>
-            <input type="date" class="form-control border-input"
-                      v-model="user.dob">
-            </input>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4">
-            <label>Email</label>
-            <input type="text" class="form-control border-input"
-                      placeholder="Email"
-                      v-model="user.email">
-            </input>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4">
-            <label>Password</label>
-            <input type="text" class="form-control border-input"
-                      label="Password"
-                      placeholder="Password"
-                      v-model="user.password">
-            </input>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4">
-            <label>Confirm Password</label>
-            <input type="text" class="form-control border-input"
-                      placeholder="Password"
-                      v-model="user.cPassword">
+                      placeholder="Job"
+                      v-model="user.job">
             </input>
           </div>
         </div>
 
         <br>
         <div class="text-left">
-            <button v-on:click="save" class="btn btn-info btn-fill btn-wd">Sign Up</button>
+            <button v-on:click="save" class="btn btn-info btn-fill btn-wd">ดำเนินการต่อ</button>
         </div>
         <div class="clearfix"></div>
       </form>
