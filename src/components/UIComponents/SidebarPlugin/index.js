@@ -12,7 +12,8 @@ const SidebarStore = {
       name: 'User Profile',
       icon: 'ti-user',
       path: '/admin/stats'
-    },
+    }
+    /*,
     {
       name: 'Table List',
       icon: 'ti-view-list-alt',
@@ -38,6 +39,7 @@ const SidebarStore = {
       icon: 'ti-bell',
       path: '/admin/notifications'
     }
+    */
   ],
   displaySidebar (value) {
     this.showSidebar = value
