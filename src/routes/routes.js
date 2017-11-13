@@ -5,6 +5,7 @@ import NotFound from '../components/GeneralViews/NotFoundPage.vue'
 // Admin pages
 import Overview from 'src/components/Dashboard/Views/Overview.vue'
 import UserProfile from 'src/components/Dashboard/Views/UserProfile.vue'
+import RegisterForm from 'src/components/Dashboard/Views/UserProfile/RegisterForm.vue'
 
 const routes = [
   {
@@ -26,6 +27,11 @@ const routes = [
         path: 'stats',
         name: 'stats',
         component: UserProfile
+      },
+      {
+        path: 'register',
+        name: 'register',
+        component: RegisterForm
       }
     ]
   },
