@@ -1,128 +1,110 @@
 <template>
   <div class="card">
     <div class="header">
-      <h4 class="title">Edit Profile</h4>
+      <h4 class="title">Sign Up</h4>
     </div>
     <div class="content">
       <form>
         <div class="row">
-          <div class="col-md-5">
-            <fg-input type="text"
-                      label="Company"
-                      :disabled="true"
-                      placeholder="Paper dashboard"
-                      v-model="user.company">
-            </fg-input>
-          </div>
-          <div class="col-md-3">
-
-            <fg-input type="text"
-                      label="Username"
-                      placeholder="Username"
-                      v-model="user.username">
-            </fg-input>
-          </div>
           <div class="col-md-4">
-            <fg-input type="email"
-                      label="Username"
+            <label>First Name</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="First Name"
+                      v-model="user.firstname">
+            </input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label>Last Name</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="Last Name"
+                      v-model="user.lastname">
+            </input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label>Date of Birth</label>
+            <input type="date" class="form-control border-input"
+                      v-model="user.dob">
+            </input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label>Email</label>
+            <input type="text" class="form-control border-input"
                       placeholder="Email"
                       v-model="user.email">
-            </fg-input>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <fg-input type="text"
-                      label="First Name"
-                      placeholder="First Name"
-                      v-model="user.firstName">
-            </fg-input>
-          </div>
-          <div class="col-md-6">
-            <fg-input type="text"
-                      label="Last Name"
-                      placeholder="Last Name"
-                      v-model="user.lastName">
-            </fg-input>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-12">
-            <fg-input type="text"
-                      label="Address"
-                      placeholder="Home Address"
-                      v-model="user.address">
-            </fg-input>
+            </input>
           </div>
         </div>
 
         <div class="row">
           <div class="col-md-4">
-            <fg-input type="text"
-                      label="City"
-                      placeholder="City"
-                      v-model="user.city">
-            </fg-input>
-          </div>
-          <div class="col-md-4">
-            <fg-input type="text"
-                      label="Country"
-                      placeholder="Country"
-                      v-model="user.country">
-            </fg-input>
-          </div>
-          <div class="col-md-4">
-            <fg-input type="number"
-                      label="Postal Code"
-                      placeholder="ZIP Code"
-                      v-model="user.postalCode">
-            </fg-input>
+            <label>Password</label>
+            <input type="text" class="form-control border-input"
+                      label="Password"
+                      placeholder="Password"
+                      v-model="user.password">
+            </input>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>About Me</label>
-              <textarea rows="5" class="form-control border-input"
-                        placeholder="Here can be your description"
-                        v-model="user.aboutMe">
-
-              </textarea>
-            </div>
+          <div class="col-md-4">
+            <label>Confirm Password</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="Password"
+                      v-model="user.cPassword">
+            </input>
           </div>
         </div>
-        <div class="text-center">
-          <button type="submit" class="btn btn-info btn-fill btn-wd" @click.prevent="updateProfile">
-            Update Profile
-          </button>
+
+        <br>
+        <div class="text-left">
+            <button v-on:click="save" class="btn btn-info btn-fill btn-wd">Sign Up</button>
         </div>
         <div class="clearfix"></div>
       </form>
     </div>
   </div>
 </template>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
+  import axios from 'axios'
   export default {
     data () {
       return {
         user: {
-          company: 'Paper Dashboard',
-          username: 'michael23',
+          firstname: '',
           email: '',
-          lastName: 'Faker',
-          address: 'Melbourne, Australia',
-          city: 'melbourne',
-          postalCode: '',
-          aboutMe: `Oh so, your weak rhyme. You doubt I'll bother, reading into it.I'll probably won't, left to my own devicesBut that's the difference in our opinions.`
+          lastname: '',
+          password: '',
+          dob: ''
         }
       }
     },
     methods: {
-      updateProfile () {
-        alert('Your data: ' + JSON.stringify(this.user))
+      save () {
+        var url = window.api_host + 'register'
+
+        if (this.user.password !== this.user.cPassword) {
+          return alert('Password incorrect')
+        }
+
+        axios.post(
+          url,
+          this.user,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          console.log(response)
+          alert(response.data.error_msg)
+        })
       }
     }
   }
