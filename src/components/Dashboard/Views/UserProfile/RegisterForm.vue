@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div v-if="state==1" class="card">
     <div class="header">
       <h4 class="title">Sign Up</h4>
     </div>
@@ -73,6 +73,30 @@
       </form>
     </div>
   </div>
+
+  <div v-else-if="state==2" class="card">
+    <div class="header">
+      <h4 class="title">Activate Code</h4>
+    </div>
+    <div class="content">
+      <form>
+        <div class="row">
+          <div class="col-md-4">
+            <label>Activate Code</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="Code"
+                      v-model="user.code">
+            </input>
+          </div>
+        </div>
+        <br>
+        <div class="text-left">
+            <button v-on:click="activate" class="btn btn-info btn-fill btn-wd">Submit</button>
+        </div>
+        <div class="clearfix"></div>
+      </form>
+    </div>
+  </div>
 </template>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
@@ -80,6 +104,7 @@
   export default {
     data () {
       return {
+        state: 1,
         user: {
           firstname: '',
           email: '',
@@ -92,7 +117,6 @@
     methods: {
       save () {
         var url = window.api_host + 'register'
-
         if (this.user.password !== this.user.cPassword) {
           return alert('Password incorrect')
         }
@@ -102,9 +126,33 @@
           this.user,
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         ).then((response) => {
-          console.log(response)
-          alert(response.data.error_msg)
+          if (response.data.success) {
+            alert(response.data.error_msg)
+            this.state = 2
+          } else {
+            alert(response.data.error_msg)
+          }
         })
+      },
+      activate () {
+        var url = window.api_host + 'activate'
+
+        axios.post(
+          url,
+          this.user,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            alert(response.data.error_msg)
+            window.location.href = '/?#/admin/stats'
+          } else {
+            alert(response.data.error_msg)
+          }
+        })
+      },
+      active2 () {
+        alert('active 2')
+        window.location.href = '/?#/admin/stats'
       }
     }
   }
