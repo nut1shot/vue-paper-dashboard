@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div v-if="state==1" class="card">
     <div class="header">
       <h4 class="title">ข้อมูลบุคคล</h4>
     </div>
@@ -27,48 +27,136 @@
 
         <br>
         <div class="text-left">
-            <button v-on:click="save" class="btn btn-info btn-fill btn-wd">ดำเนินการต่อ</button>
+            <button v-on:click="next" class="btn btn-info btn-fill btn-wd">ดำเนินการต่อ</button>
         </div>
         <div class="clearfix"></div>
       </form>
     </div>
   </div>
+
+  <div v-else-if="state==2" class="card">
+    <div class="header">
+      <h4 class="title">ข้อมูลรายได้</h4>
+    </div>
+    <div class="content">
+      <form>
+        <div class="row">
+          <div class="col-md-4">
+            <label>รายได้</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="Income"
+                      v-model="user.income">
+            </input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label>รายได้เสริม</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="Other Income"
+                      v-model="user.otherIncome">
+            </input>
+          </div>
+        </div>
+
+        <br>
+        <div class="text-left">
+            <button v-on:click="back" class="btn btn-info btn-fill btn-wd">ย้อนกลับ</button>
+            <button v-on:click="next" class="btn btn-info btn-fill btn-wd">ดำเนินการต่อ</button>
+        </div>
+        <div class="clearfix"></div>
+      </form>
+    </div>
+  </div>
+
+  <div v-else-if="state==3" class="card">
+    <div class="header">
+      <h4 class="title">ภาระสินเชื่อ</h4>
+    </div>
+    <div class="content">
+      <form>
+        <div class="row">
+          <div class="col-md-4">
+            <label>หนี้บัตรเครดิต</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="Credit Card Debt"
+                      v-model="user.creditDebt">
+            </input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label>หนี้บ้าน</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="Home Debt"
+                      v-model="user.homeDebt">
+            </input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label>หนี้รถ</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="Car Debt"
+                      v-model="user.carDebt">
+            </input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label>หนี้ส่วนบุคคล</label>
+            <input type="text" class="form-control border-input"
+                      placeholder="Person Debt"
+                      v-model="user.personDebt">
+            </input>
+          </div>
+        </div>
+
+        <br>
+        <div class="text-left">
+            <button v-on:click="back" class="btn btn-info btn-fill btn-wd">ย้อนกลับ</button>
+            <button v-on:click="next" class="btn btn-info btn-fill btn-wd">ดำเนินการต่อ</button>
+        </div>
+        <div class="clearfix"></div>
+      </form>
+    </div>
+  </div>
+  
 </template>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-  import axios from 'axios'
   export default {
     data () {
       return {
+        state: 1,
         user: {
-          firstname: '',
-          email: '',
-          lastname: '',
-          password: '',
-          dob: ''
+          age: '',
+          job: '',
+          income: '',
+          otherIncome: '',
+          creditDebt: '',
+          homeDebt: '',
+          carDebt: '',
+          personDebt: ''
         }
       }
     },
     methods: {
-      save () {
-        var url = window.api_host + 'register'
-
-        if (this.user.password !== this.user.cPassword) {
-          return alert('Password incorrect')
+      next () {
+        if (this.state < 3) {
+          this.state += 1
+        } else {
+          alert(JSON.stringify(this.user))
         }
-
-        axios.post(
-          url,
-          this.user,
-          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-        ).then((response) => {
-          console.log(response)
-          alert(response.data.error_msg)
-        })
+      },
+      back () {
+        this.state -= 1
       }
     }
   }
-
 </script>
 <style>
 
