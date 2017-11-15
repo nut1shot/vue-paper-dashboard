@@ -1,5 +1,5 @@
 <template>
-  <div v-if="state==1" class="card">
+  <div v-if="state==2" class="card">
     <div class="header">
       <h4 class="title">Sign Up</h4>
     </div>
@@ -65,6 +65,12 @@
           </div>
         </div>
 
+        <div class="row text-right">
+          <div class="col-md-4">
+            <a href="/?#/admin/register" v-on:click="goToLogin">Log In</a>
+          </div>
+        </div>
+
         <br>
         <div class="text-left">
             <button v-on:click="save" class="btn btn-info btn-fill btn-wd">Sign Up</button>
@@ -74,7 +80,7 @@
     </div>
   </div>
 
-  <div v-else-if="state==2" class="card">
+  <div v-else-if="state==3" class="card">
     <div class="header">
       <h4 class="title">Activate Code</h4>
     </div>
@@ -92,6 +98,44 @@
         <br>
         <div class="text-left">
             <button v-on:click="activate" class="btn btn-info btn-fill btn-wd">Submit</button>
+        </div>
+        <div class="clearfix"></div>
+      </form>
+    </div>
+  </div>
+
+  <div v-else-if="state==1" class="card">
+    <div class="header">
+      <h4 class="title">Log in</h4>
+    </div>
+    <div class="content">
+      <form>
+        <div class="row">
+          <div class="col-md-4">
+            <label>Email</label>
+            <input type="text" class="form-control border-input"
+                      v-model="user.email">
+            </input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label>Password</label>
+            <input type="text" class="form-control border-input"
+                      v-model="user.password">
+            </input>
+          </div>
+        </div>
+ 
+        <div class="row text-right">
+          <div class="col-md-4">
+            <a href="/?#/admin/register" v-on:click="goToRegister">Sign up for Creden</a>
+          </div>
+        </div>
+        <br>
+        <div class="text-left">
+            <button v-on:click="login" class="btn btn-info btn-fill btn-wd">Log in</button>
         </div>
         <div class="clearfix"></div>
       </form>
@@ -128,7 +172,7 @@
         ).then((response) => {
           if (response.data.success) {
             alert(response.data.error_msg)
-            this.state = 2
+            this.state = 3
           } else {
             alert(response.data.error_msg)
           }
@@ -150,9 +194,27 @@
           }
         })
       },
-      active2 () {
-        alert('active 2')
-        window.location.href = '/?#/admin/stats'
+      goToRegister () {
+        this.state = 2
+      },
+      goToLogin () {
+        this.state = 1
+      },
+      login () {
+        var url = window.api_host + 'login'
+
+        axios.post(
+          url,
+          this.user,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            alert(response.data.error_msg)
+            window.location.href = '/?#/admin/stats'
+          } else {
+            alert(response.data.error_msg)
+          }
+        })
       }
     }
   }
