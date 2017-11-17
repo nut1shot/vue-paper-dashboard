@@ -1,70 +1,36 @@
 <template>
   <div>
 
-    <!--Stats cards-->
+    <div class="col-12">
+        <chart-card :chart-data="preferencesChart.data"  chart-type="Pie">
+          <h4 class="title" slot="title">คะแนนของคุณ</h4>
+          <span slot="subTitle"> </span>
+          <div slot="legend">
+            <i class="fa fa-circle text-info"></i> คะแนนที่ได้
+            <i class="fa fa-circle text-warning"></i> คะแนนที่เหลือ
+          </div>
+        </chart-card>
+      </div>
+      
+    <div>
+      <div v-for="stats in statsCards" class="icon-a">
+        <i :class="stats.icon" v-on:click="goToPage(stats.value)" ></i>
+      </div>
+    </div>
+
     <div class="row">
-      <div class="col-lg-3 col-sm-6" v-for="stats in statsCards">
+      <div v-for="stats in listCom">
         <stats-card>
           <div class="icon-big text-center" :class="`icon-${stats.type}`" slot="header">
-            <i :class="stats.icon"></i>
+            <img style="width: 100%;" :src="stats.path">
           </div>
           <div class="numbers" slot="content">
             <p>{{stats.title}}</p>
             {{stats.value}}
           </div>
-          <div class="stats" slot="footer">
-            <i :class="stats.footerIcon"></i> {{stats.footerText}}
-          </div>
         </stats-card>
       </div>
     </div>
-
-    <!--Charts-->
-    <div class="row">
-
-      <div class="col-xs-12">
-        <chart-card :chart-data="usersChart.data" :chart-options="usersChart.options">
-          <h4 class="title" slot="title">Users behavior</h4>
-          <span slot="subTitle"> 24 Hours performance</span>
-          <span slot="footer">
-            <i class="ti-reload"></i> Updated 3 minutes ago</span>
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Open
-            <i class="fa fa-circle text-danger"></i> Click
-            <i class="fa fa-circle text-warning"></i> Click Second Time
-          </div>
-        </chart-card>
-      </div>
-
-      <div class="col-md-6 col-xs-12">
-        <chart-card :chart-data="preferencesChart.data"  chart-type="Pie">
-          <h4 class="title" slot="title">Email Statistics</h4>
-          <span slot="subTitle"> Last campaign performance</span>
-          <span slot="footer">
-            <i class="ti-timer"></i> Campaign set 2 days ago</span>
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Open
-            <i class="fa fa-circle text-danger"></i> Bounce
-            <i class="fa fa-circle text-warning"></i> Unsubscribe
-          </div>
-        </chart-card>
-      </div>
-
-      <div class="col-md-6 col-xs-12">
-        <chart-card :chart-data="activityChart.data" :chart-options="activityChart.options">
-          <h4 class="title" slot="title">2015 Sales</h4>
-          <span slot="subTitle"> All products including Taxes</span>
-          <span slot="footer">
-            <i class="ti-check"></i> Data information certified</span>
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Tesla Model S
-            <i class="fa fa-circle text-warning"></i> BMW 5 Series
-          </div>
-        </chart-card>
-      </div>
-
-    </div>
-
   </div>
 </template>
 <script>
@@ -83,90 +49,119 @@
         statsCards: [
           {
             type: 'warning',
-            icon: 'ti-server',
-            title: 'Capacity',
-            value: '105GB',
+            icon: 'ti-home',
+            title: 'บ้าน',
+            value: 'บ้าน',
             footerText: 'Updated now',
             footerIcon: 'ti-reload'
           },
           {
             type: 'success',
-            icon: 'ti-wallet',
-            title: 'Revenue',
-            value: '$1,345',
+            icon: 'ti-car',
+            title: 'รถ',
+            value: 'รถ',
             footerText: 'Last day',
             footerIcon: 'ti-calendar'
           },
           {
             type: 'danger',
-            icon: 'ti-pulse',
-            title: 'Errors',
-            value: '23',
+            icon: 'ti-shopping-cart',
+            title: 'Voucher',
+            value: 'Voucher',
             footerText: 'In the last hour',
             footerIcon: 'ti-timer'
-          },
-          {
-            type: 'info',
-            icon: 'ti-twitter-alt',
-            title: 'Followers',
-            value: '+45',
-            footerText: 'Updated now',
-            footerIcon: 'ti-reload'
           }
         ],
-        usersChart: {
-          data: {
-            labels: ['9:00AM', '12:00AM', '3:00PM', '6:00PM', '9:00PM', '12:00PM', '3:00AM', '6:00AM'],
-            series: [
-              [287, 385, 490, 562, 594, 626, 698, 895, 952],
-              [67, 152, 193, 240, 387, 435, 535, 642, 744],
-              [23, 113, 67, 108, 190, 239, 307, 410, 410]
-            ]
-          },
-          options: {
-            low: 0,
-            high: 1000,
-            showArea: true,
-            height: '245px',
-            axisX: {
-              showGrid: false
-            },
-            lineSmooth: this.$Chartist.Interpolation.simple({
-              divisor: 3
-            }),
-            showLine: true,
-            showPoint: false
-          }
-        },
-        activityChart: {
-          data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            series: [
-              [542, 543, 520, 680, 653, 753, 326, 434, 568, 610, 756, 895],
-              [230, 293, 380, 480, 503, 553, 600, 664, 698, 710, 736, 795]
-            ]
-          },
-          options: {
-            seriesBarDistance: 10,
-            axisX: {
-              showGrid: false
-            },
-            height: '245px'
-          }
-        },
+        listCom: [
+        ],
         preferencesChart: {
           data: {
-            labels: ['62%', '32%', '6%'],
-            series: [62, 32, 6]
+            labels: ['62%', '32%'],
+            series: [62, 32]
           },
           options: {}
         }
 
+      }
+    },
+    mounted () {
+      this.preferencesChart.data = {
+        labels: ['99%', '1%'],
+        series: [99, 1]
+      }
+    },
+    created () {
+    },
+    methods: {
+      goToPage (v) {
+        if (v === 'บ้าน') {
+          this.listCom = [
+            {
+              type: 'success',
+              path: 'https://brandinside.asia/wp-content/uploads/2016/11/citibank.png',
+              title: 'ธนาคารYY',
+              value: 'ดอกเบี้ย 20%',
+              footerText: 'Last day',
+              footerIcon: 'ti-calendar'
+            },
+            {
+              type: 'warning',
+              path: 'http://www.jobthaiweb.com/company/picture/iaor_logo.gif?d=0',
+              title: 'ธนาคารxx',
+              value: 'ดอกเบี้ย 10%',
+              footerText: 'Updated now',
+              footerIcon: 'ti-reload'
+            },
+            {
+              type: 'danger',
+              path: 'https://www.egov.go.th/upload/eservice-thumbnail/img_07ce457edfaa09ec5e9c040b52971370.png',
+              title: 'ธนาคารZZ',
+              value: 'ดอกเบี้ย 30%',
+              footerText: 'In the last hour',
+              footerIcon: 'ti-timer'
+            }
+          ]
+        } else if (v === 'รถ') {
+          this.listCom = [
+            {
+              type: 'warning',
+              path: 'http://www.jobthaiweb.com/company/picture/iaor_logo.gif?d=0',
+              title: 'ธนาคารxx',
+              value: 'ดอกเบี้ย 10%',
+              footerText: 'Updated now',
+              footerIcon: 'ti-reload'
+            }
+          ]
+        } else {
+          this.listCom = [
+            {
+              type: 'danger',
+              path: 'https://www.egov.go.th/upload/eservice-thumbnail/img_07ce457edfaa09ec5e9c040b52971370.png',
+              title: 'ธนาคารZZ',
+              value: 'ดอกเบี้ย 30%',
+              footerText: 'In the last hour',
+              footerIcon: 'ti-timer'
+            },
+            {
+              type: 'success',
+              path: 'http://www.jobthaiweb.com/company/picture/iaor_logo.gif?d=0',
+              title: 'ธนาคารYY',
+              value: 'ดอกเบี้ย 20%',
+              footerText: 'Last day',
+              footerIcon: 'ti-calendar'
+            }
+          ]
+        }
       }
     }
   }
 
 </script>
 <style>
-
+.icon-a {
+    font-size: -webkit-xxx-large;
+    display: inline-block;
+    width: 33%;
+    text-align: center;
+}
 </style>

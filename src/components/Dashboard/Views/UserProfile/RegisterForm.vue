@@ -9,7 +9,6 @@
           <div class="col-md-4">
             <label>First Name</label>
             <input type="text" class="form-control border-input"
-                      placeholder="First Name"
                       v-model="user.firstname">
             </input>
           </div>
@@ -19,7 +18,6 @@
           <div class="col-md-4">
             <label>Last Name</label>
             <input type="text" class="form-control border-input"
-                      placeholder="Last Name"
                       v-model="user.lastname">
             </input>
           </div>
@@ -38,7 +36,6 @@
           <div class="col-md-4">
             <label>Email</label>
             <input type="text" class="form-control border-input"
-                      placeholder="Email"
                       v-model="user.email">
             </input>
           </div>
@@ -49,7 +46,6 @@
             <label>Password</label>
             <input type="text" class="form-control border-input"
                       label="Password"
-                      placeholder="Password"
                       v-model="user.password">
             </input>
           </div>
@@ -59,15 +55,14 @@
           <div class="col-md-4">
             <label>Confirm Password</label>
             <input type="text" class="form-control border-input"
-                      placeholder="Password"
                       v-model="user.cPassword">
             </input>
           </div>
         </div>
-
+        <div class="spacer" style="height:9px;"></div> 
         <div class="row text-right">
           <div class="col-md-4">
-            <a href="/?#/admin/register" v-on:click="goToLogin">Log In</a>
+            <a v-on:click="goToLogin">Log In</a>
           </div>
         </div>
 
@@ -127,10 +122,10 @@
             </input>
           </div>
         </div>
- 
+        <div class="spacer" style="height:9px;"></div> 
         <div class="row text-right">
           <div class="col-md-4">
-            <a href="/?#/admin/register" v-on:click="goToRegister">Sign up for Creden</a>
+            <a v-on:click="goToRegister">Sign up for Creden</a>
           </div>
         </div>
         <br>
@@ -188,7 +183,7 @@
         ).then((response) => {
           if (response.data.success) {
             alert(response.data.error_msg)
-            window.location.href = '/?#/admin/stats'
+            window.location.href = '#/admin/stats'
           } else {
             alert(response.data.error_msg)
           }
@@ -210,7 +205,7 @@
         ).then((response) => {
           if (response.data.success) {
             alert(response.data.error_msg)
-            window.location.href = '/?#/admin/stats'
+            window.location.href = '#/admin/stats'
           } else {
             alert(response.data.error_msg)
           }
