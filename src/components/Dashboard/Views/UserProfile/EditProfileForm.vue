@@ -7,6 +7,33 @@
       <form>
         <div class="row">
           <div class="col-md-4">
+            <label>ชื่อ</label>
+            <input type="text" class="form-control border-input"
+                      v-model="user.firstname">
+            </input>
+          </div>
+        </div>
+        <div class="spacer" style="height:9px;"></div> 
+        <div class="row">
+          <div class="col-md-4">
+            <label>นามสกุล</label>
+            <input type="text" class="form-control border-input"
+                      v-model="user.lastname">
+            </input>
+          </div>
+        </div>
+        <div class="spacer" style="height:9px;"></div> 
+        <div class="row">
+          <div class="col-md-4">
+            <label>วัน/เดือน/ปี เกิด</label>
+            <input type="date" class="form-control border-input"
+                      v-model="user.dob">
+            </input>
+          </div>
+        </div>
+        <div class="spacer" style="height:9px;"></div> 
+        <div class="row">
+          <div class="col-md-4">
             <label>อายุ</label>
             <input type="number" class="form-control border-input"
                       v-model="user.age">
@@ -26,10 +53,8 @@
           </div>
         </div>
         <br>
-        <div class="text-right">
-          <div class="col-md-4">
+        <div class="text-left">
             <button v-on:click="next" class="btn btn-info btn-fill btn-wd">ดำเนินการต่อ</button>
-          </div>
         </div>
         <div class="clearfix"></div>
       </form>
@@ -95,7 +120,7 @@
         <div class="spacer" style="height:9px;"></div> 
         <div class="row">
           <div class="col-md-5">
-            <label>ที่อยู่ อาศัย (ยอดการจ่าย ต่อ เดือน รวมทุกรายการ)</label>
+            <label>ที่อยู่ อาศัย (ยอดการจ่าย ต่อ เดือน)</label>
             <input type="number" class="form-control border-input"
                       v-model="user.homeDebt">
             </input>
@@ -104,7 +129,7 @@
         <div class="spacer" style="height:9px;"></div> 
         <div class="row">
           <div class="col-md-5">
-            <label>รถยนต์, จักรยานยนต์ (ยอดการจ่าย ต่อ เดือน รวมทุกรายการ)</label>
+            <label>รถยนต์, จักรยานยนต์ (ยอดการจ่าย ต่อ เดือน)</label>
             <input type="number" class="form-control border-input"
                       v-model="user.carDebt">
             </input>
@@ -113,7 +138,7 @@
         <div class="spacer" style="height:9px;"></div> 
         <div class="row">
           <div class="col-md-5">
-            <label>สินเชื่อส่วนบุคคล (ยอดการจ่าย ต่อ เดือน รวมทุกรายการ)</label>
+            <label>สินเชื่อส่วนบุคคล (ยอดการจ่าย ต่อ เดือน)</label>
             <input type="number" class="form-control border-input"
                       v-model="user.personDebt">
             </input>
@@ -131,12 +156,17 @@
   
 </template>
 <script>
+  import {evtBus} from 'main'
   export default {
     data () {
       return {
         state: 1,
         allState: 3,
         user: {
+          firstname: '',
+          lastname: '',
+          email: '',
+          dob: '',
           age: '',
           job: '',
           income: '',
@@ -154,12 +184,37 @@
         if (this.state < this.allState) {
           this.state += 1
         } else {
-          alert(JSON.stringify(this.user))
-          window.location.href = '#/admin/overview'
+          var url = window.api_host + 'update_profile'
+
+          axios.post(
+            url,
+            this.user,
+            { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+          ).then((response) => {
+            if (response.data.success) {
+              alert(response.data.error_msg)
+              console.log(response.data.data)
+              evtBus.setUser(JSON.stringify(response.data.data))
+              window.location.href = '#/admin/overview'
+            } else {
+              alert(response.data.error_msg)
+            }
+          })
         }
       },
       back () {
         this.state -= 1
+      },
+      setUser (data) {
+        this.user = data
+      }
+    },
+    beforeMount: function () {
+      if (localStorage.getItem('user_login') == null) {
+        alert('Please Login')
+        window.location.href = '#/admin/register'
+      } else {
+        this.setUser(evtBus.user)
       }
     }
   }

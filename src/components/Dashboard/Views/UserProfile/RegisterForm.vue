@@ -59,15 +59,10 @@
             </input>
           </div>
         </div>
-        <div class="spacer" style="height:9px;"></div> 
-        <div class="row text-right">
-          <div class="col-md-4">
-            <a v-on:click="goToLogin">Log In</a>
-          </div>
-        </div>
         <br>
         <div class="text-left">
-            <button v-on:click="save" class="btn btn-info btn-fill btn-wd">Sign Up</button>
+            <button v-on:click="save" class="btn btn-info btn-fill btn-wd">Sign up</button>
+            <button v-on:click="goToLogin" class="btn btn-info btn-fill btn-wd">Log in</button>
         </div>
         <div class="clearfix"></div>
       </form>
@@ -121,14 +116,9 @@
             </input>
           </div>
         </div>
-        <div class="spacer" style="height:9px;"></div> 
-        <div class="row text-right">
-          <div class="col-md-4">
-            <a v-on:click="goToRegister">Sign up for Creden</a>
-          </div>
-        </div>
         <br>
         <div class="text-left">
+            <button v-on:click="goToRegister" class="btn btn-info btn-fill btn-wd">Sign up</button>
             <button v-on:click="login" class="btn btn-info btn-fill btn-wd">Log in</button>
         </div>
         <div class="clearfix"></div>
@@ -147,6 +137,7 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
   import axios from 'axios'
+  import {evtBus} from 'main'
   export default {
     data () {
       return {
@@ -174,6 +165,8 @@
         ).then((response) => {
           if (response.data.success) {
             alert(response.data.error_msg)
+            console.log(response.data.data)
+            this.user = response.data.data
             this.state = 3
           } else {
             alert(response.data.error_msg)
@@ -190,7 +183,9 @@
         ).then((response) => {
           if (response.data.success) {
             alert(response.data.error_msg)
-            window.location.href = '#/admin/stats'
+            evtBus.setUser(JSON.stringify(this.user))
+            localStorage.setItem('user_login', response.data.data.email)
+            window.location.href = '#/admin/profile'
           } else {
             alert(response.data.error_msg)
           }
@@ -212,7 +207,10 @@
         ).then((response) => {
           if (response.data.success) {
             alert(response.data.error_msg)
-            window.location.href = '#/admin/stats'
+            console.log(response.data.data)
+            evtBus.setUser(JSON.stringify(response.data.data))
+            localStorage.setItem('user_login', response.data.data.email)
+            window.location.href = '#/admin/profile'
           } else {
             alert(response.data.error_msg)
           }
