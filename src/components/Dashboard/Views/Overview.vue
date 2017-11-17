@@ -3,11 +3,9 @@
 
     <div class="col-12">
         <chart-card :chart-data="preferencesChart.data"  chart-type="Pie">
-          <h4 class="title" slot="title">คะแนนของคุณ</h4>
+          <h4 class="title" slot="title">คะแนนของคุณ{{user.email}}</h4>
           <span slot="subTitle"> </span>
           <div slot="legend" style="display:none">
-            <i class="fa fa-circle text-info"></i> คะแนนที่ได้
-            <i class="fa fa-circle text-warning"></i> คะแนนที่เหลือ
           </div>
         </chart-card>
       </div>
@@ -46,6 +44,11 @@
      */
     data () {
       return {
+        total_score: 850,
+        user: {
+          email: '',
+          score: 250
+        },
         statsCards: [
           {
             type: 'warning',
@@ -86,8 +89,8 @@
     },
     mounted () {
       this.preferencesChart.data = {
-        labels: ['820', ' '],
-        series: [99, 1]
+        labels: [this.user.score, ' '],
+        series: [this.user.score, this.total_score - this.user.score]
       }
     },
     created () {
