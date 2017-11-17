@@ -135,6 +135,14 @@
       </form>
     </div>
   </div>
+
+  <div v-else-if="state==4" class="card">
+    <div class="content">
+        <div class="text-center">
+            <label>Loading...</label>
+        </div>
+    </div>
+  </div>
 </template>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
@@ -158,7 +166,7 @@
         if (this.user.password !== this.user.cPassword) {
           return alert('Password incorrect')
         }
-
+        this.state = 4
         axios.post(
           url,
           this.user,
