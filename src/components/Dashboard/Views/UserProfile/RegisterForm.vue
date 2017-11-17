@@ -7,31 +7,31 @@
       <form>
         <div class="row">
           <div class="col-md-4">
-            <label>First Name</label>
+            <label>ชื่อ</label>
             <input type="text" class="form-control border-input"
                       v-model="user.firstname">
             </input>
           </div>
         </div>
-
+        <div class="spacer" style="height:9px;"></div> 
         <div class="row">
           <div class="col-md-4">
-            <label>Last Name</label>
+            <label>นามสกุล</label>
             <input type="text" class="form-control border-input"
                       v-model="user.lastname">
             </input>
           </div>
         </div>
-
+        <div class="spacer" style="height:9px;"></div> 
         <div class="row">
           <div class="col-md-4">
-            <label>Date of Birth</label>
+            <label>วัน/เดือน/ปี เกิด</label>
             <input type="date" class="form-control border-input"
                       v-model="user.dob">
             </input>
           </div>
         </div>
-
+        <div class="spacer" style="height:9px;"></div> 
         <div class="row">
           <div class="col-md-4">
             <label>Email</label>
@@ -40,21 +40,21 @@
             </input>
           </div>
         </div>
-
+        <div class="spacer" style="height:9px;"></div> 
         <div class="row">
           <div class="col-md-4">
             <label>Password</label>
-            <input type="text" class="form-control border-input"
+            <input type="password" class="form-control border-input"
                       label="Password"
                       v-model="user.password">
             </input>
           </div>
         </div>
-
+        <div class="spacer" style="height:9px;"></div> 
         <div class="row">
           <div class="col-md-4">
             <label>Confirm Password</label>
-            <input type="text" class="form-control border-input"
+            <input type="password" class="form-control border-input"
                       v-model="user.cPassword">
             </input>
           </div>
@@ -65,7 +65,6 @@
             <a v-on:click="goToLogin">Log In</a>
           </div>
         </div>
-
         <br>
         <div class="text-left">
             <button v-on:click="save" class="btn btn-info btn-fill btn-wd">Sign Up</button>
@@ -117,7 +116,7 @@
         <div class="row">
           <div class="col-md-4">
             <label>Password</label>
-            <input type="text" class="form-control border-input"
+            <input type="password" class="form-control border-input"
                       v-model="user.password">
             </input>
           </div>
