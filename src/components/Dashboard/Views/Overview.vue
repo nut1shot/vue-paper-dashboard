@@ -32,6 +32,7 @@
   </div>
 </template>
 <script>
+  import {evtBus} from 'main'
   import StatsCard from 'components/UIComponents/Cards/StatsCard.vue'
   import ChartCard from 'components/UIComponents/Cards/ChartCard.vue'
   export default {
@@ -88,6 +89,7 @@
       }
     },
     mounted () {
+      this.user.score = evtBus.getScore()
       this.preferencesChart.data = {
         labels: [this.user.score, ' '],
         series: [this.user.score, this.total_score - this.user.score]

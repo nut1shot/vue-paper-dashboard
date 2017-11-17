@@ -36,6 +36,16 @@ Object.defineProperty(Vue.prototype, '$Chartist', {
     return this.$root.Chartist
   }
 })
+export const evtBus = new Vue({
+  methods: {
+    setScore (x) {
+      alert('score = ' + x)
+    },
+    getScore () {
+      return 123
+    }
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({
