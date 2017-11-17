@@ -13,6 +13,7 @@ import routes from './routes/routes'
 
 // library imports
 import Chartist from 'chartist'
+import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.css'
 import './assets/sass/paper-dashboard.scss'
 import 'es6-promise/auto'
@@ -37,12 +38,45 @@ Object.defineProperty(Vue.prototype, '$Chartist', {
   }
 })
 export const evtBus = new Vue({
+  data () {
+    return {
+      score: 750,
+      user: {
+        firstname: '',
+        lastname: '',
+        email: '',
+        dob: '',
+        age: '',
+        job: '',
+        income: '',
+        otherIncome: '',
+        creditDebt: '',
+        sumDebt: '',
+        homeDebt: '',
+        carDebt: '',
+        personDebt: ''
+      }
+    }
+  },
   methods: {
     setScore (x) {
       alert('score = ' + x)
     },
     getScore () {
-      return 123
+      var url = window.api_host + 'get_score'
+      axios.post(
+        url,
+        { email: 'nutp10.1@gmail.com' },
+        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+      ).then((response) => {
+        if (response.data.success) {
+          this.score = response.data.score
+        }
+      })
+    },
+    setUser (data) {
+      console.log(data)
+      this.user = JSON.parse(data)
     }
   }
 })
