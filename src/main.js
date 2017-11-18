@@ -19,6 +19,7 @@ import Chartist from 'chartist'
 import 'bootstrap/dist/css/bootstrap.css'
 import './assets/sass/paper-dashboard.scss'
 import 'es6-promise/auto'
+import axios from 'axios'
 
 // plugin setup
 Vue.use(VueRouter)
@@ -42,7 +43,22 @@ Object.defineProperty(Vue.prototype, '$Chartist', {
 export const evtBus = new Vue({
   data () {
     return {
-      chart: {}
+      chart: {},
+      user: {
+        firstname: '',
+        lastname: '',
+        email: '',
+        dob: '',
+        age: '',
+        job: '',
+        income: '',
+        otherIncome: '',
+        creditDebt: '',
+        sumDebt: '',
+        homeDebt: '',
+        carDebt: '',
+        personDebt: ''
+      }
     }
   },
   methods: {
@@ -52,12 +68,9 @@ export const evtBus = new Vue({
     getScore () {
       return 123
     },
-    setChart (x) {
-      // alert('chart is now  ' + JSON.stringify(x))
-      this.chart = x
-    },
-    getChart () {
-      return this.chart
+    setUser (json) {
+      console.log(json)
+      this.user = JSON.parse(json)
     }
   }
 })
