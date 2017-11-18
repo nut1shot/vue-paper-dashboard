@@ -98,7 +98,7 @@
       <h4 class="title">Log in</h4>
     </div>
     <div class="content">
-      <form>
+      <form v-on:submit.prevent="onSubmit">
         <div class="row">
           <div class="col-md-4">
             <label>Email</label>
@@ -201,14 +201,13 @@
       },
       login () {
         var url = window.api_host + 'login'
-
         axios.post(
           url,
           this.user,
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         ).then((response) => {
           if (response.data.success) {
-            // alert(response.data.error_msg)
+            // alert('no error' + response.data.error_msg)
             console.log(response.data.data)
             if (response.data.data.score === undefined) {
             }
@@ -217,7 +216,7 @@
             localStorage.setItem('user_login', response.data.data.email)
             window.location.href = '#/admin/profile'
           } else {
-            alert(response.data.error_msg)
+            alert('error' + response.data.error_msg)
           }
         })
       }
