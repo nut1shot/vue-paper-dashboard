@@ -86,10 +86,10 @@
       }
     },
     mounted () {
-      this.getScore2()
+      // this.getScore2()
     },
     created () {
-      this.getScore2()
+      // this.getScore2()
     },
     methods: {
       getScore2 () {
@@ -101,10 +101,10 @@
         ).then((response) => {
           if (response.data.success) {
             this.user.score = response.data.score
-            this.user.email = 'eark@xxx.com'
             this.preferencesChart.data.series[0] = response.data.score
             this.preferencesChart.data.series[1] = this.total_score - response.data.score
-            this.preferencesChart.data.labels[0] = response.data.score + '  '
+            this.preferencesChart.data.labels[0] = response.data.score + ' '
+            this.preferencesChart.data.labels[1] = '  '
           }
         })
       },
