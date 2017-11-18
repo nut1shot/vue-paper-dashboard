@@ -8,12 +8,14 @@ import Notifications from './components/UIComponents/NotificationPlugin'
 import SideBar from './components/UIComponents/SidebarPlugin'
 import App from './App'
 
+// Custom
+import { store } from './store/store'
+
 // router setup
 import routes from './routes/routes'
 
 // library imports
 import Chartist from 'chartist'
-import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.css'
 import './assets/sass/paper-dashboard.scss'
 import 'es6-promise/auto'
@@ -40,22 +42,7 @@ Object.defineProperty(Vue.prototype, '$Chartist', {
 export const evtBus = new Vue({
   data () {
     return {
-      score: 750,
-      user: {
-        firstname: '',
-        lastname: '',
-        email: '',
-        dob: '',
-        age: '',
-        job: '',
-        income: '',
-        otherIncome: '',
-        creditDebt: '',
-        sumDebt: '',
-        homeDebt: '',
-        carDebt: '',
-        personDebt: ''
-      }
+      chart: {}
     }
   },
   methods: {
@@ -63,20 +50,14 @@ export const evtBus = new Vue({
       alert('score = ' + x)
     },
     getScore () {
-      var url = window.api_host + 'get_score'
-      axios.post(
-        url,
-        { email: 'nutp10.1@gmail.com' },
-        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-      ).then((response) => {
-        if (response.data.success) {
-          this.score = response.data.score
-        }
-      })
+      return 123
     },
-    setUser (data) {
-      console.log(data)
-      this.user = JSON.parse(data)
+    setChart (x) {
+      // alert('chart is now  ' + JSON.stringify(x))
+      this.chart = x
+    },
+    getChart () {
+      return this.chart
     }
   }
 })
@@ -84,6 +65,7 @@ export const evtBus = new Vue({
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   render: h => h(App),
   router,
   data: {
