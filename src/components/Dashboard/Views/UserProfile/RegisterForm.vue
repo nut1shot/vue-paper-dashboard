@@ -207,6 +207,10 @@
         ).then((response) => {
           if (response.data.success) {
             alert(response.data.error_msg)
+            this.$store.state.chartData.series[0] = 800
+            this.$store.state.chartData.series[1] = 850 - 800
+            this.$store.state.chartData.labels[0] = 800 + ' '
+
             console.log(response.data.data)
             evtBus.setUser(JSON.stringify(response.data.data))
             localStorage.setItem('user_login', response.data.data.email)
