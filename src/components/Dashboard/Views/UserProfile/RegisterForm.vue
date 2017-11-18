@@ -206,13 +206,14 @@
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         ).then((response) => {
           if (response.data.success) {
-            alert(response.data.error_msg)
-            this.$store.state.chartData.series[0] = 800
-            this.$store.state.chartData.series[1] = 850 - 800
-            this.$store.state.chartData.labels[0] = 800 + ' '
-
+            // alert(response.data.error_msg)
             console.log(response.data.data)
-            evtBus.setUser(JSON.stringify(response.data.data))
+            if (response.data.data.score === undefined) {
+              /* Assign dummy score if user have none */
+              response.data.data.score = 300
+            }
+            evtBus.setUser(response.data.data)
+            localStorage.setItem('user', JSON.stringify(response.data.data))
             localStorage.setItem('user_login', response.data.data.email)
             window.location.href = '#/admin/profile'
           } else {

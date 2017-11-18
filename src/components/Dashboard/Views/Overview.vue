@@ -33,6 +33,7 @@
 </template>
 <script>
   import axios from 'axios'
+  import { evtBus } from 'main'
   import StatsCard from 'components/UIComponents/Cards/StatsCard.vue'
   import ChartCard from 'components/UIComponents/Cards/ChartCard.vue'
   export default {
@@ -86,28 +87,15 @@
       }
     },
     mounted () {
-      // this.getScore2()
+      let u = store.state.user
+      let score = 170
+      store.state.chartData.series[0] = score
+      store.state.chartData.series[1] = 850 - score
+      store.state.chartData.labels[0] = score + ' '
     },
     created () {
-      // this.getScore2()
     },
     methods: {
-      getScore2 () {
-        var url = window.api_host + 'get_score'
-        axios.post(
-          url,
-          { email: 'nutp10.1@gmail.com' },
-          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-        ).then((response) => {
-          if (response.data.success) {
-            this.user.score = response.data.score
-            this.preferencesChart.data.series[0] = response.data.score
-            this.preferencesChart.data.series[1] = this.total_score - response.data.score
-            this.preferencesChart.data.labels[0] = response.data.score + ' '
-            this.preferencesChart.data.labels[1] = '  '
-          }
-        })
-      },
       goToPage (v) {
         if (v === 'บ้าน') {
           this.listCom = [

@@ -57,20 +57,41 @@ export const evtBus = new Vue({
         sumDebt: '',
         homeDebt: '',
         carDebt: '',
-        personDebt: ''
+        personDebt: '',
+        score: 250
       }
     }
   },
   methods: {
-    setScore (x) {
-      alert('score = ' + x)
+    getUser () {
+      return this.user
     },
-    getScore () {
-      return 123
+    setUser (u) {
+      this.user = u
+      let score = u.score || 197
+      store.state.user = u
+      store.state.chartData.series[0] = score
+      store.state.chartData.series[1] = 850 - score
+      store.state.chartData.labels[0] = score + ' '
     },
-    setUser (json) {
-      console.log(json)
-      this.user = JSON.parse(json)
+    newUser () {
+    /* create a new empty user object */
+      return {
+        firstname: '',
+        lastname: '',
+        email: '',
+        dob: '',
+        age: '',
+        job: '',
+        income: '',
+        otherIncome: '',
+        creditDebt: '',
+        sumDebt: '',
+        homeDebt: '',
+        carDebt: '',
+        personDebt: '',
+        score: 250
+      }
     }
   }
 })
@@ -83,5 +104,12 @@ new Vue({
   router,
   data: {
     Chartist: Chartist
+  },
+  created () {
+    /* try loading saved user data */
+    if (localStorage.user !== undefined) {
+      let u = JSON.parse(localStorage.user)
+      evtBus.setUser(u)
+    }
   }
 })
