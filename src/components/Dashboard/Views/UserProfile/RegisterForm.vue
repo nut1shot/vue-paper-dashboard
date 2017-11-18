@@ -170,12 +170,13 @@
             this.state = 3
           } else {
             alert(response.data.error_msg)
+            this.state = 2
           }
         })
       },
       activate () {
         var url = window.api_host + 'activate'
-
+        var that = this
         axios.post(
           url,
           this.user,
@@ -183,8 +184,9 @@
         ).then((response) => {
           if (response.data.success) {
             alert(response.data.error_msg)
-            evtBus.setUser(JSON.stringify(this.user))
-            localStorage.setItem('user_login', response.data.data.email)
+            localStorage.setItem('user_login', that.user.email)
+            localStorage.setItem('user', JSON.stringify(that.user))
+            evtBus.setUser(that.user)
             window.location.href = '#/admin/profile'
           } else {
             alert(response.data.error_msg)
