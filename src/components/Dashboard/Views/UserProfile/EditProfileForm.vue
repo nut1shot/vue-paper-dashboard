@@ -192,9 +192,8 @@
             { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
           ).then((response) => {
             if (response.data.success) {
-              alert(response.data.error_msg)
-              console.log(response.data.data)
-              evtBus.setUser(JSON.stringify(response.data.data))
+              evtBus.setUser(response.data.data)
+              localStorage.setItem('user', JSON.stringify(response.data.data))
               window.location.href = '#/admin/overview'
             } else {
               alert(response.data.error_msg)

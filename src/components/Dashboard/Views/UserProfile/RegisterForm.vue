@@ -209,8 +209,6 @@
             // alert(response.data.error_msg)
             console.log(response.data.data)
             if (response.data.data.score === undefined) {
-              /* Assign dummy score if user have none */
-              response.data.data.score = 300
             }
             evtBus.setUser(response.data.data)
             localStorage.setItem('user', JSON.stringify(response.data.data))
