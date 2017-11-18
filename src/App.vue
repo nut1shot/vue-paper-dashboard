@@ -4,13 +4,41 @@
     <!--This sidebar appears only for screens smaller than 992px-->
     <side-bar type="navbar" :sidebar-links="$sidebar.sidebarLinks">
       <ul class="nav navbar-nav">
+         <li>
+           <a v-on:click="goToLogin">
+             <i class="ti-shift-right"></i>
+             <p>{{isLoggedIn()}}</p>
+           </a>
+         </li> 
+         <li class="divider"></li>
       </ul>
     </side-bar>
   </div>
 </template>
 
 <script>
-  export default {}
+  import { evtBus } from 'main'
+  export default {
+    methods: {
+      isLoggedIn () {
+        if (this.$store.state.user.email !== '') {
+          return 'Log out'
+        } else {
+          return 'Log In'
+        }
+      },
+      goToLogin () {
+        if (localStorage.getItem('user_login') != null) {
+          localStorage.removeItem('user_login')
+          localStorage.removeItem('user')
+          evtBus.setUser(evtBus.newUser())
+          window.location.href = '#/admin/register'
+        } else {
+          window.location.href = '#/admin/register'
+        }
+      }
+    }
+  }
 </script>
 
 <style lang="scss"></style>

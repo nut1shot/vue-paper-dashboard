@@ -89,9 +89,9 @@
     mounted () {
       let u = store.state.user
       let score = 170
-      store.state.chartData.series[0] = score
-      store.state.chartData.series[1] = 850 - score
-      store.state.chartData.labels[0] = score + ' '
+      this.$store.state.chartData.series[0] = score
+      this.$store.state.chartData.series[1] = 850 - score
+      this.$store.state.chartData.labels[0] = score + ' '
     },
     created () {
     },
