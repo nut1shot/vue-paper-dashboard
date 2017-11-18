@@ -12,7 +12,8 @@
       
     <div>
       <div v-for="stats in statsCards" class="icon-a">
-        <i :class="stats.icon" v-on:click="goToPage(stats.value)" ></i>
+        <i :class="stats.icon" v-on:click="goToPage(stats.value)" v-if="$store.state.user.email === ''"></i>
+        <i :class="stats.icon" v-on:click="goToPage(stats.value)" style="color:green" v-else></i>
       </div>
     </div>
 
@@ -96,6 +97,10 @@
     },
     methods: {
       goToPage (v) {
+        if (this.$store.state.user.email === '') {
+          return
+        }
+
         if (v === 'บ้าน') {
           this.listCom = [
             {
