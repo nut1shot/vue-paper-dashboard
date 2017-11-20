@@ -75,39 +75,26 @@
                     </select>
                 </div>
             </div>
-            <div class="spacer" style="height:20px;"></div> 
+            <div class="spacer" style="height:9px;"></div> 
             <div class="row">
                 <div class="col-md-4">
                     <label>ที่ปัจจุบันทำงานเกิน 4 เดือนหรือไม่</label>
-                </div>                
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <input type="radio" value="true" v-model="user.workMonth">
-                    <label for="one">เกิน</label>
+                    <select v-model="user.workMonth" class="form-control border-input">
+                        <option>เกิน</option>
+                        <option>ไม่เกิน</option>
+                    </select>
                 </div>
-                <div class="col-md-2">
-                    <input type="radio" value="false" v-model="user.workMonth">
-                    <label for="two">ไม่เกิน</label>
-                </div>                
             </div>
-            <div class="spacer" style="height:20px;"></div> 
+            <div class="spacer" style="height:9px;"></div> 
             <div class="row">
                 <div class="col-md-4">
                     <label>จังหวัดที่ทำงาน</label>
-                </div>                
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <input type="radio" value="bangkok" v-model="user.workProvince">
-                    <label for="one">กรุงเทพ</label>
+                    <select v-model="user.workProvince" class="form-control border-input">
+                        <option>กรุงเทพ</option>
+                        <option>ต่างจังหวัด</option>
+                    </select>
                 </div>
-                <div class="col-md-2">
-                    <input type="radio" value="countySide" v-model="user.workProvince">
-                    <label for="two">ต่างจังหวัด</label>
-                </div>                
             </div>
-
             <br>
             <div class="text-left">
                 <button v-on:click="back" class="btn btn-info btn-fill btn-wd">ย้อนกลับ</button>
@@ -173,41 +160,23 @@
             <div class="row">
                 <div class="col-md-4">
                     <label>วิธีรับรายได้</label>
-                </div>                
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <input type="radio" value="transfer" v-model="user.getSalaryBy">
-                    <label for="one">โอนเข้าบัญชี</label>
+                    <select v-model="user.getSalaryBy" class="form-control border-input">
+                        <option>โอนเข้าบัญชี</option>
+                        <option>รับเป็นเงินสด/เช็ค</option>
+                    </select>
                 </div>
-                <div class="col-md-2">
-                    <input type="radio" value="cash" v-model="user.getSalaryBy">
-                    <label for="two">รับเป็นเงินสด/เช็ค</label>
-                </div>                
             </div>
             <div class="spacer" style="height:20px;"></div>   
             <div class="row">
                 <div class="col-md-4">
                     <label>ปัจจบันท่านมีบัตรเครดิตอยู่แล้วหรือไม่</label>
-                </div>                
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <input type="radio" value="visa" v-model="user.creditCardType">
-                    <label for="two">VISA</label>
-                </div> 
-                <div class="col-md-2">
-                    <input type="radio" value="masterCard" v-model="user.creditCardType">
-                    <label for="two">Master card</label>
-                </div>   
-                <div class="col-md-2">
-                    <input type="radio" value="amex" v-model="user.creditCardType">
-                    <label for="two">AMEX</label>
-                </div>          
-                <div class="col-md-2">
-                    <input type="radio" value="none" v-model="user.creditCardType">
-                    <label for="one">ยังไม่มี</label>
-                </div>        
+                    <select v-model="user.creditCardType" class="form-control border-input">
+                        <option>VISA</option>
+                        <option>Master card</option>
+                        <option>AMEX</option>
+                        <option>ยังไม่มี</option>
+                    </select>
+                </div>
             </div>     
             <br>   
             <div class="text-left">
@@ -443,12 +412,7 @@
       }
     },
     beforeMount: function () {
-      if (localStorage.getItem('user_login') == null) {
-        alert('Please Login')
-        window.location.href = '#/admin/register'
-      } else {
-        this.setUser(evtBus.user)
-      }
+      this.setUser(evtBus.user)
     }
   }
 </script>
