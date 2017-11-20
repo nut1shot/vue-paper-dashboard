@@ -4,7 +4,7 @@
       <h4 class="title">ข้อมูลบุคคล</h4>
     </div>
     <div class="content">
-      <form>
+      <form v-on:submit.prevent="onSubmit">
         <div class="row">
           <div class="col-md-4">
             <label>ชื่อ</label>
@@ -66,7 +66,7 @@
       <h4 class="title">ข้อมูลรายได้</h4>
     </div>
     <div class="content">
-      <form>
+      <form v-on:submit.prevent="onSubmit">
         <div class="row">
           <div class="col-md-4">
             <label>รายได้</label>
@@ -99,7 +99,7 @@
       <h4 class="title">ภาระสินเชื่อ</h4>
     </div>
     <div class="content">
-      <form>
+      <form v-on:submit.prevent="onSubmit">
         <div class="row">
           <div class="col-md-5">
             <label>คุณมีบัตรเครดิตกี่ใบ</label>

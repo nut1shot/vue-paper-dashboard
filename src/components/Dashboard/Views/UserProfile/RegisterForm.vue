@@ -4,7 +4,7 @@
       <h4 class="title">Sign Up</h4>
     </div>
     <div class="content">
-      <form>
+      <form v-on:submit.prevent="onSubmit">
         <div class="row">
           <div class="col-md-4">
             <label>ชื่อ</label>
