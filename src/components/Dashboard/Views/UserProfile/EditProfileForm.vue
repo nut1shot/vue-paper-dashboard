@@ -1,4 +1,234 @@
 <template>
+    <div v-if="state==1" class="card">
+        <div class="header">
+        <h4 class="title">ข้อมูลบุคคล</h4>
+        </div>
+        <div class="content">
+        <form v-on:submit.prevent="onSubmit">
+            <div class="row">
+            <div class="col-md-4">
+                <label>ชื่อ</label>
+                <input type="text" class="form-control border-input"
+                        v-model="user.firstname">
+                </input>
+            </div>
+            </div>
+            <div class="spacer" style="height:9px;"></div> 
+            <div class="row">
+            <div class="col-md-4">
+                <label>นามสกุล</label>
+                <input type="text" class="form-control border-input"
+                        v-model="user.lastname">
+                </input>
+            </div>
+            </div>
+            <div class="spacer" style="height:9px;"></div> 
+            <div class="row">
+            <div class="col-md-4">
+                <label>วัน/เดือน/ปี เกิด</label>
+                <input type="date" class="form-control border-input"
+                        v-model="user.dob">
+                </input>
+            </div>
+            </div>
+            <div class="spacer" style="height:9px;"></div> 
+            <div class="row">
+            <div class="col-md-4">
+                <label>อายุ</label>
+                <input type="number" class="form-control border-input"
+                        v-model="user.age">
+                </input>
+            </div>
+            </div>
+            <div class="spacer" style="height:9px;"></div> 
+            <div class="row">
+            <div class="col-md-4">
+                <label>เบอร์มือถือ</label>
+                <input type="number" class="form-control border-input"
+                        v-model="user.tel">
+                </input>
+            </div>
+            </div>
+            <br>
+            <div class="text-left">
+                <button v-on:click="next" class="btn btn-info btn-fill btn-wd">ดำเนินการต่อ</button>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+        </div>
+    </div>
+
+    <div v-else-if="state==2" class="card">
+        <div class="header">
+        <h4 class="title">ข้อมูลการทำงาน</h4>
+        </div>
+        <div class="content">
+        <form v-on:submit.prevent="onSubmit">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>อาชีพ</label>
+                    <select v-model="user.job" class="form-control border-input">
+                        <option>พนักงานบริษัท</option>
+                        <option>ข้าราชการ</option>
+                        <option>รัฐวิสาหกิจ</option>
+                        <option>ธุรกิจส่วนตัว</option>
+                    </select>
+                </div>
+            </div>
+            <div class="spacer" style="height:20px;"></div> 
+            <div class="row">
+                <div class="col-md-4">
+                    <label>ที่ปัจจุบันทำงานเกิน 4 เดือนหรือไม่</label>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <input type="radio" value="true" v-model="user.workMonth">
+                    <label for="one">เกิน</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="radio" value="false" v-model="user.workMonth">
+                    <label for="two">ไม่เกิน</label>
+                </div>                
+            </div>
+            <div class="spacer" style="height:20px;"></div> 
+            <div class="row">
+                <div class="col-md-4">
+                    <label>จังหวัดที่ทำงาน</label>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <input type="radio" value="bangkok" v-model="user.workProvince">
+                    <label for="one">กรุงเทพ</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="radio" value="countySide" v-model="user.workProvince">
+                    <label for="two">ต่างจังหวัด</label>
+                </div>                
+            </div>
+
+            <br>
+            <div class="text-left">
+                <button v-on:click="back" class="btn btn-info btn-fill btn-wd">ย้อนกลับ</button>
+                <button v-on:click="next" class="btn btn-info btn-fill btn-wd">ดำเนินการต่อ</button>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+        </div>
+    </div>
+
+    <div v-else-if="state==3" class="card">
+        <div class="header">
+        <h4 class="title">ข้อมูลรายได้</h4>
+        </div>
+        <div class="spacer" style="height:9px;"></div>  
+        <div class="content">
+        <form v-on:submit.prevent="onSubmit">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>ฐานเงินเดือน</label>
+                    <input type="number" class="form-control border-input"
+                            v-model="user.basicSalary">
+                    </input>
+                </div>
+            </div>
+            <div class="spacer" style="height:9px;"></div> 
+            <div class="row">
+                <div class="col-md-4">
+                    <label>1. ค่าตำแหน่ง, ค่าครองชีพ, ค่าวิชาชีพ</label>
+                    <input type="number" class="form-control border-input"
+                            v-model="user.comIncome">
+                    </input>
+                </div>
+            </div> 
+            <div class="spacer" style="height:9px;"></div> 
+            <div class="row">
+                <div class="col-md-4">
+                    <label>2. รายได้อื่นๆ ที่ได้เท่ากันทุกเดือน</label>
+                    <input type="number" class="form-control border-input"
+                            v-model="user.otherIncomeE">
+                    </input>
+                </div>
+            </div>
+            <div class="spacer" style="height:9px;"></div> 
+            <div class="row">
+                <div class="col-md-4">
+                    <label>3. ค่าคอททิชชั่น, เซอร์วิสชาร์ท, ค่าโอที</label>
+                    <input type="number" class="form-control border-input"
+                            v-model="user.otIncome">
+                    </input>
+                </div>
+            </div>
+            <div class="spacer" style="height:9px;"></div> 
+            <div class="row">
+                <div class="col-md-4">
+                    <label>4. รายได้อื่นๆ ที่ไม่เท่ากันทุกเดือน</label>
+                    <input type="number" class="form-control border-input"
+                            v-model="user.otherIncomeN">
+                    </input>
+                </div>
+            </div>     
+            <div class="spacer" style="height:40px;"></div>   
+            <div class="row">
+                <div class="col-md-4">
+                    <label>วิธีรับรายได้</label>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <input type="radio" value="transfer" v-model="user.getSalaryBy">
+                    <label for="one">โอนเข้าบัญชี</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="radio" value="cash" v-model="user.getSalaryBy">
+                    <label for="two">รับเป็นเงินสด/เช็ค</label>
+                </div>                
+            </div>
+            <div class="spacer" style="height:20px;"></div>   
+            <div class="row">
+                <div class="col-md-4">
+                    <label>ปัจจบันท่านมีบัตรเครดิตอยู่แล้วหรือไม่</label>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <input type="radio" value="visa" v-model="user.creditCardType">
+                    <label for="two">VISA</label>
+                </div> 
+                <div class="col-md-2">
+                    <input type="radio" value="masterCard" v-model="user.creditCardType">
+                    <label for="two">Master card</label>
+                </div>   
+                <div class="col-md-2">
+                    <input type="radio" value="amex" v-model="user.creditCardType">
+                    <label for="two">AMEX</label>
+                </div>          
+                <div class="col-md-2">
+                    <input type="radio" value="none" v-model="user.creditCardType">
+                    <label for="one">ยังไม่มี</label>
+                </div>        
+            </div>     
+            <br>   
+            <div class="text-left">
+                <button v-on:click="back" class="btn btn-info btn-fill btn-wd">ย้อนกลับ</button>
+                <button v-on:click="next" class="btn btn-info btn-fill btn-wd">ประมวลผล</button>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+  <!-- creditme form
   <div v-if="state==1" class="card">
     <div class="header">
       <h4 class="title">ข้อมูลบุคคล</h4>
@@ -153,6 +383,7 @@
       </form>
     </div>
   </div>
+  -->
   
 </template>
 <script>
@@ -168,14 +399,17 @@
           email: '',
           dob: '',
           age: '',
+          tel: '',
           job: '',
-          income: '',
-          otherIncome: '',
-          creditDebt: '',
-          sumDebt: '',
-          homeDebt: '',
-          carDebt: '',
-          personDebt: ''
+          workMonth: '',
+          workProvince: '',
+          basicSalary: '',
+          comIncome: '',
+          otIncome: '',
+          otherIncomeE: '',
+          otherIncomeN: '',
+          creditCardType: '',
+          getSalaryBy: ''
         }
       }
     },
