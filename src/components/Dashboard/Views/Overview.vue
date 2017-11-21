@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div class="col-12">
+    <div class="col-12" v-on:click="goProfile()">
         <chart-card :chart-data="preferencesChart.data"  chart-type="Pie">
           <h4 class="title" slot="title">คะแนนของคุณ{{user.email}}</h4>
           <span slot="subTitle"> </span>
@@ -11,14 +11,17 @@
       </div>
       
     <div>
-      <div v-for="stats in statsCards" class="icon-a">
-        <i :class="stats.icon" v-on:click="goToPage(stats.value)" v-if="$store.state.user.email === ''"></i>
+      <div v-for="stats in statsCards" style="background:white" :class="[stats.classCss]" class="icon-a">
+        <i :class="stats.icon" v-on:click="goToPage(stats.value)" v-if="$store.state.user.age === '' || $store.state.user.age == null "></i>
         <i :class="stats.icon" v-on:click="goToPage(stats.value)" style="color:green" v-else></i>
+        <!--
+        <i :class="stats.icon" v-on:click="goToPage(stats.value)" style="color:green"></i>
+        -->
       </div>
     </div>
 
     <div class="row">
-      <div v-for="stats in listCom">
+      <div v-for="stats in listCom" v-on:click="goVoucher(stats.title)">
         <stats-card>
           <div class="icon-big text-center" :class="`icon-${stats.type}`" slot="header">
             <img style="width: 100%;" :src="stats.path">
@@ -56,18 +59,20 @@
           {
             type: 'warning',
             icon: 'ti-home',
-            title: 'บ้าน',
-            value: 'บ้าน',
+            title: 'home',
+            value: 'home',
             footerText: 'Updated now',
-            footerIcon: 'ti-reload'
+            footerIcon: 'ti-reload',
+            classCss: 'class1'
           },
           {
             type: 'success',
             icon: 'ti-car',
-            title: 'รถ',
-            value: 'รถ',
+            title: 'car',
+            value: 'car',
             footerText: 'Last day',
-            footerIcon: 'ti-calendar'
+            footerIcon: 'ti-calendar',
+            classCss: 'class2'
           },
           {
             type: 'danger',
@@ -75,7 +80,8 @@
             title: 'Voucher',
             value: 'Voucher',
             footerText: 'In the last hour',
-            footerIcon: 'ti-timer'
+            footerIcon: 'ti-timer',
+            classCss: 'class3'
           }
         ],
         listCom: [
@@ -87,6 +93,8 @@
 
       }
     },
+    computed: {
+    },
     mounted () {
       let score = this.$store.state.user.score || 169
       this.$store.state.chartData.series[0] = score
@@ -96,12 +104,28 @@
     created () {
     },
     methods: {
-      goToPage (v) {
+      goVoucher (title) {
+        console.log(this.$store.state.user.email)
         if (this.$store.state.user.email === '') {
+          alert('please login')
+          evtBus.user.userTmp = true
+          window.location.href = '#/admin/register'
+        } else {
+          alert('goto :' + title)
+        }
+      },
+      goProfile () {
+        window.location.href = '#/admin/profile'
+      },
+      goToPage (v) {
+        console.log(this.$store.state.user.age)
+        if (this.$store.state.user.age === '') {
           return
         }
-
-        if (v === 'บ้าน') {
+        if (v === 'home') {
+          this.statsCards[0].classCss = 'blue'
+          this.statsCards[1].classCss = 'red'
+          this.statsCards[2].classCss = 'red'
           this.listCom = [
             {
               type: 'success',
@@ -128,7 +152,10 @@
               footerIcon: 'ti-timer'
             }
           ]
-        } else if (v === 'รถ') {
+        } else if (v === 'car') {
+          this.statsCards[0].classCss = 'red'
+          this.statsCards[1].classCss = 'blue'
+          this.statsCards[2].classCss = 'red'
           this.listCom = [
             {
               type: 'warning',
@@ -140,6 +167,9 @@
             }
           ]
         } else {
+          this.statsCards[0].classCss = 'red'
+          this.statsCards[1].classCss = 'red'
+          this.statsCards[2].classCss = 'blue'
           this.listCom = [
             {
               type: 'danger',
@@ -170,5 +200,13 @@
     display: inline-block;
     width: 33%;
     text-align: center;
+}
+
+.red {
+  background : white !important;
+}
+
+.blue {
+  background : #f3bb45 !important;
 }
 </style>
