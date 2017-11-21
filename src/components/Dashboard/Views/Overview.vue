@@ -96,6 +96,7 @@
     computed: {
     },
     mounted () {
+      this.$sidebar.displaySidebar(false)
       let score = this.$store.state.user.score || 169
       this.$store.state.chartData.series[0] = score
       this.$store.state.chartData.series[1] = 850 - score

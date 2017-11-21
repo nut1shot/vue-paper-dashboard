@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 // Plugins
+import TopNavbar from './components/Dashboard/Layout/TopNavbar.vue'
 import GlobalComponents from './globalComponents'
 import GlobalDirectives from './globalDirectives'
 import Notifications from './components/UIComponents/NotificationPlugin'
@@ -97,8 +98,7 @@ export const evtBus = new Vue({
         otherIncomeN: '',
         creditCardType: '',
         getSalaryBy: '',
-        score: 250,
-        userTmp: false
+        score: 250
       }
     }
   }
