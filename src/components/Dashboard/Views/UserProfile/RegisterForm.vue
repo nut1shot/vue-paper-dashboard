@@ -240,6 +240,7 @@
     },
     beforeMount: function () {
       this.setUser(evtBus.getUser())
+      this.$sidebar.displaySidebar(false)
     }
   }
 

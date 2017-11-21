@@ -28,12 +28,15 @@
         }
       },
       goToLogin () {
+        evtBus.user.userTmp = false
         if (localStorage.getItem('user_login') != null) {
           localStorage.removeItem('user_login')
           localStorage.removeItem('user')
           evtBus.setUser(evtBus.newUser())
+          this.$sidebar.displaySidebar(false)
           window.location.href = '#/admin/register'
         } else {
+          this.$sidebar.displaySidebar(false)
           window.location.href = '#/admin/register'
         }
       }

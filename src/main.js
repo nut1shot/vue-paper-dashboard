@@ -98,7 +98,8 @@ export const evtBus = new Vue({
         otherIncomeN: '',
         creditCardType: '',
         getSalaryBy: '',
-        score: 250
+        score: 250,
+        userTmp: false
       }
     }
   }
