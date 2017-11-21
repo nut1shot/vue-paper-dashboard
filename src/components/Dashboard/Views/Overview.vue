@@ -120,7 +120,7 @@
       },
       goToPage (v) {
         console.log(this.$store.state.user.age)
-        if (this.$store.state.user.age === '') {
+        if (this.$store.state.user.age === '' || this.$store.state.user.age == null) {
           return
         }
         if (v === 'home') {
