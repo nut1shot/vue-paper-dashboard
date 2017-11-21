@@ -388,13 +388,14 @@
           this.state += 1
         } else {
           var url = window.api_host + 'update_profile'
-
+          console.log(this.user)
           axios.post(
             url,
             this.user,
             { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
           ).then((response) => {
             if (response.data.success) {
+              console.log(response.data.data)
               evtBus.setUser(response.data.data)
               localStorage.setItem('user', JSON.stringify(response.data.data))
               window.location.href = '#/admin/overview'
@@ -412,7 +413,7 @@
       }
     },
     beforeMount: function () {
-      this.setUser(evtBus.user)
+      this.setUser(evtBus.getUser())
     }
   }
 </script>

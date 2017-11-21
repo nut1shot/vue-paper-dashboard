@@ -74,7 +74,7 @@
       <h4 class="title">Activate Code</h4>
     </div>
     <div class="content">
-      <form>
+      <form v-on:submit.prevent="onSubmit">
         <div class="row">
           <div class="col-md-4">
             <label>Activate Code</label>
@@ -157,6 +157,7 @@
         if (this.user.password !== this.user.cPassword) {
           return alert('Password incorrect')
         }
+        console.log(this.user)
         this.state = 4
         axios.post(
           url,
@@ -187,7 +188,13 @@
             localStorage.setItem('user_login', that.user.email)
             localStorage.setItem('user', JSON.stringify(that.user))
             evtBus.setUser(that.user)
-            window.location.href = '#/admin/profile'
+            if (evtBus.user.userTmp) {
+              alert('Go')
+              evtBus.user.userTmp = false
+              window.location.href = '#/admin/overview'
+            } else {
+              window.location.href = '#/admin/profile'
+            }
           } else {
             alert(response.data.error_msg)
           }
@@ -201,6 +208,7 @@
       },
       login () {
         var url = window.api_host + 'login'
+        console.log(this.user)
         axios.post(
           url,
           this.user,
@@ -214,12 +222,24 @@
             evtBus.setUser(response.data.data)
             localStorage.setItem('user', JSON.stringify(response.data.data))
             localStorage.setItem('user_login', response.data.data.email)
-            window.location.href = '#/admin/profile'
+            if (evtBus.user.userTmp) {
+              alert('Go')
+              evtBus.user.userTmp = false
+              window.location.href = '#/admin/overview'
+            } else {
+              window.location.href = '#/admin/overview'
+            }
           } else {
             alert('error' + response.data.error_msg)
           }
         })
+      },
+      setUser (data) {
+        this.user = data
       }
+    },
+    beforeMount: function () {
+      this.setUser(evtBus.getUser())
     }
   }
 
