@@ -188,13 +188,7 @@
             localStorage.setItem('user_login', that.user.email)
             localStorage.setItem('user', JSON.stringify(that.user))
             evtBus.setUser(that.user)
-            if (evtBus.user.userTmp) {
-              alert('Go')
-              evtBus.user.userTmp = false
-              window.location.href = '#/admin/overview'
-            } else {
-              window.location.href = '#/admin/profile'
-            }
+            window.location.href = '#/admin/kyc'
           } else {
             alert(response.data.error_msg)
           }
