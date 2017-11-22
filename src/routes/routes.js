@@ -3,9 +3,12 @@ import DashboardLayout from '../components/Dashboard/Layout/DashboardLayout.vue'
 import NotFound from '../components/GeneralViews/NotFoundPage.vue'
 
 // Admin pages
+import FormCitibank from 'src/components/Dashboard/Views/FormCitibank.vue'
+import Blank from 'src/components/Dashboard/Views/Blank.vue'
 import Overview from 'src/components/Dashboard/Views/Overview.vue'
 import UserProfile from 'src/components/Dashboard/Views/UserProfile.vue'
 import RegisterForm from 'src/components/Dashboard/Views/UserProfile/RegisterForm.vue'
+import Kyc from 'src/components/Dashboard/Views/Kyc.vue'
 
 const routes = [
   {
@@ -24,14 +27,29 @@ const routes = [
         component: Overview
       },
       {
-        path: 'stats',
-        name: 'stats',
+        path: 'profile',
+        name: 'My Profile',
         component: UserProfile
       },
       {
         path: 'register',
         name: 'register',
         component: RegisterForm
+      },
+      {
+        path: 'citibank',
+        name: 'citibank',
+        component: FormCitibank
+      },
+      {
+        path: 'blank',
+        name: 'blank',
+        component: Blank
+      },
+      {
+        path: 'kyc',
+        name: 'kyc',
+        component: Kyc
       }
     ]
   },

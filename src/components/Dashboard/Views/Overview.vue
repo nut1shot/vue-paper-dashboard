@@ -19,10 +19,10 @@
         -->
       </div>
     </div>
-
+    <br>
     <div class="row">
       <div v-for="stats in listCom" v-on:click="goVoucher(stats.title)">
-        <stats-card>
+        <stats-card v-if="stats.score <= $store.state.user.score">
           <div class="icon-big text-center" :class="`icon-${stats.type}`" slot="header">
             <img style="width: 100%;" :src="stats.path">
           </div>
@@ -76,7 +76,7 @@
           },
           {
             type: 'danger',
-            icon: 'ti-shopping-cart',
+            icon: 'ti-credit-card',
             title: 'Voucher',
             value: 'Voucher',
             footerText: 'In the last hour',
@@ -112,7 +112,7 @@
           evtBus.user.userTmp = true
           window.location.href = '#/admin/register'
         } else {
-          alert('goto :' + title)
+          window.location.href = '#/admin/citibank'
         }
       },
       goProfile () {
@@ -134,7 +134,8 @@
               title: 'ธนาคารYY',
               value: 'ดอกเบี้ย 20%',
               footerText: 'Last day',
-              footerIcon: 'ti-calendar'
+              footerIcon: 'ti-calendar',
+              score: 500
             },
             {
               type: 'warning',
@@ -142,7 +143,8 @@
               title: 'ธนาคารxx',
               value: 'ดอกเบี้ย 10%',
               footerText: 'Updated now',
-              footerIcon: 'ti-reload'
+              footerIcon: 'ti-reload',
+              score: 300
             },
             {
               type: 'danger',
@@ -150,7 +152,8 @@
               title: 'ธนาคารZZ',
               value: 'ดอกเบี้ย 30%',
               footerText: 'In the last hour',
-              footerIcon: 'ti-timer'
+              footerIcon: 'ti-timer',
+              score: 300
             }
           ]
         } else if (v === 'car') {
@@ -164,7 +167,8 @@
               title: 'ธนาคารxx',
               value: 'ดอกเบี้ย 10%',
               footerText: 'Updated now',
-              footerIcon: 'ti-reload'
+              footerIcon: 'ti-reload',
+              score: 250
             }
           ]
         } else {
@@ -173,20 +177,28 @@
           this.statsCards[2].classCss = 'blue'
           this.listCom = [
             {
-              type: 'danger',
-              path: 'https://www.egov.go.th/upload/eservice-thumbnail/img_07ce457edfaa09ec5e9c040b52971370.png',
-              title: 'ธนาคารZZ',
-              value: 'ดอกเบี้ย 30%',
-              footerText: 'In the last hour',
-              footerIcon: 'ti-timer'
+              path: 'https://www.silkspan.com/images_new/crd_cc/card/card_citi_pla_re.gif',
+              title: 'citibank',
+              value: 'บัตรเครดิต ซิตี้รีวอร์ด',
+              score: 300
             },
             {
-              type: 'success',
-              path: 'http://www.jobthaiweb.com/company/picture/iaor_logo.gif?d=0',
-              title: 'ธนาคารYY',
-              value: 'ดอกเบี้ย 20%',
-              footerText: 'Last day',
-              footerIcon: 'ti-calendar'
+              path: 'https://www.silkspan.com/images_new/crd_cc/card/citi_cash-back.gif',
+              title: 'citibank',
+              value: 'บัตรเครดิต ซิตี้ แคชแบ็ก แพลตตินั่ม',
+              score: 400
+            },
+            {
+              path: 'https://www.silkspan.com/images_new/crd_cc/card/citi_royal.gif',
+              title: 'citibank',
+              value: 'บัตรเครดิต ซิตี้รอยัลออร์คิดพลัส แพลตตินั่มซีเล็คท์',
+              score: 500
+            },
+            {
+              path: 'https://www.silkspan.com/images_new/crd_cc/card/citi_m.gif',
+              title: 'citibank',
+              value: 'บัตรเครดิต ซิตี้ เอ็ม วีซ่า',
+              score: 500
             }
           ]
         }
