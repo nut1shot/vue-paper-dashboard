@@ -27,16 +27,7 @@
             <div class="col-md-4">
                 <label>วัน/เดือน/ปี เกิด</label>
                 <input type="date" class="form-control border-input"
-                        v-model="user.dob">
-                </input>
-            </div>
-            </div>
-            <div class="spacer" style="height:9px;"></div> 
-            <div class="row">
-            <div class="col-md-4">
-                <label>อายุ</label>
-                <input type="number" class="form-control border-input"
-                        v-model="user.age">
+                        v-model="user.dob" max="1999-12-31">
                 </input>
             </div>
             </div>
@@ -177,7 +168,23 @@
                         <option>ยังไม่มี</option>
                     </select>
                 </div>
-            </div>     
+            </div>
+            <div class="spacer" style="height:40px;"></div>   
+            <div class="row">
+                <div class="col-md-4">
+                    <button v-show="$store.state.bank.scb" class="btn btn-secondary btn-block loading">
+                        <i class="fa fa-circle-o-notch fa-spin"></i>
+                        CONNECTING SCB
+                    </button>
+                    <button v-show="!$store.state.bank.scb" v-on:click="scb" class="btn btn-info btn-block">CONNECT SCB</button>
+                    <div class="spacer" style="height:9px;"></div> 
+                    <button v-show="$store.state.bank.kbank" class="btn btn-secondary btn-block loading">
+                        <i class="fa fa-circle-o-notch fa-spin"></i>
+                        CONNECTING KBANK
+                    </button>
+                    <button v-show="!$store.state.bank.kbank" v-on:click="kBank" class="btn btn-info btn-block">CONNECT KBANK</button>
+                </div>
+            </div>        
             <br>   
             <div class="text-left">
                 <button v-on:click="back" class="btn btn-info btn-fill btn-wd">ย้อนกลับ</button>
@@ -188,6 +195,71 @@
         </div>
     </div>
 
+    <div v-else-if="state=='scb'" class="card">
+        <div class="header">
+        <h4 class="title">Connect SCB</h4>
+        </div>
+        <div class="content">
+        <form v-on:submit.prevent="onSubmit">
+            <div class="row">
+            <div class="col-md-4">
+                <label>Username</label>
+                <input type="text" class="form-control border-input"
+                        v-model="user.scbUsername">
+                </input>
+            </div>
+            </div>
+
+            <div class="row">
+            <div class="col-md-4">
+                <label>Password</label>
+                <input type="password" class="form-control border-input"
+                        v-model="user.scbPassword">
+                </input>
+            </div>
+            </div>
+            <br>
+            <div class="text-left">
+                <button v-on:click="connectSCB" class="btn btn-info btn-fill btn-wd">Connect</button>
+                <button v-on:click="close" class="btn btn-info btn-fill btn-wd">Cancel</button>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+        </div>
+    </div>
+
+    <div v-else-if="state=='kbank'" class="card">
+        <div class="header">
+        <h4 class="title">Connect KBANK</h4>
+        </div>
+        <div class="content">
+        <form>
+            <div class="row">
+            <div class="col-md-4">
+                <label>Username</label>
+                <input type="text" class="form-control border-input"
+                        v-model="user.kbankUsername">
+                </input>
+            </div>
+            </div>
+
+            <div class="row">
+            <div class="col-md-4">
+                <label>Password</label>
+                <input type="password" class="form-control border-input"
+                        v-model="user.kbankPassword">
+                </input>
+            </div>
+            </div>
+            <br>
+            <div class="text-left">
+                <button v-on:click="connectKBANK" class="btn btn-info btn-fill btn-wd">Connect</button>
+                <button v-on:click="close" class="btn btn-info btn-fill btn-wd">Cancel</button>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+        </div>
+    </div>
 
 
 
@@ -387,6 +459,7 @@
         if (this.state < this.allState) {
           this.state += 1
         } else {
+          this.user.age = this.getAge(this.user.dob)
           var url = window.api_host + 'update_profile'
           console.log(this.user)
           axios.post(
@@ -410,9 +483,74 @@
       },
       setUser (data) {
         this.user = data
+      },
+      close () {
+        this.state = 3
+      },
+      scb () {
+        this.state = 'scb'
+      },
+      kBank () {
+        this.state = 'kbank'
+      },
+      init_websocket (key) {
+        console.log('init_websocket is called')
+        var ws = new WebSocket('ws://creden.co:8089/', 'creden')
+        // ws = new WebSocket("wss://creden.co:4443/");
+        ws.onopen = function () {
+          ws.send(key)
+        }
+        ws.onmessage = function (evt) {
+          var receivedMsg = evt.data
+          console.log(receivedMsg + '<br/>')
+        }
+        ws.onclose = function () {
+          alert('connection is close')
+        }
+      },
+      connectKBANK () {
+        this.init_websocket('1234')
+        var url = window.api_host + 'bank'
+        var data = {'bank': 'kbank', 'username': this.user.kbankUsername, 'password': this.user.kbankPassword, 'key': '1234'}
+        axios.post(
+          url,
+          data,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            console.log(response.data.data)
+            this.$store.state.bank.kbank = true
+            this.state = 3
+          } else {
+            alert(response.data.error_msg)
+          }
+        })
+      },
+      connectSCB () {
+        this.init_websocket('1234')
+        var url = window.api_host + 'bank'
+        var data = {'bank': 'kbank', 'username': this.user.kbankUsername, 'password': this.user.kbankPassword, 'key': '1234'}
+        axios.post(
+          url,
+          data,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            console.log(response.data.data)
+            this.$store.state.bank.scb = true
+            this.state = 3
+          } else {
+            alert(response.data.error_msg)
+          }
+        })
+      },
+      getAge (date) {
+        var now = new Date()
+        var age = now.getFullYear() - new Date(date).getFullYear()
+        return age
       }
     },
-    beforeMount: function () {
+    mounted: function () {
       this.setUser(evtBus.getUser())
       this.$sidebar.displaySidebar(false)
     }

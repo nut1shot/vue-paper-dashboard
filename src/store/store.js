@@ -8,6 +8,7 @@ export const store = new Vuex.Store({
     user: {email: '', score: 250},
     chartData: {
       labels: ['250', ' '],
-      series: [250, 850 - 250]}
+      series: [250, 850 - 250]},
+    bank: {scb: false, kbank: false}
   }
 })
