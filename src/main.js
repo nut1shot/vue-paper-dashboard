@@ -140,8 +140,6 @@ new Vue({
       let u = JSON.parse(localStorage.user)
       evtBus.setUser(u)
     }
-
-    this.init_websocket()
   },
   methods: {
     init_websocket () {
