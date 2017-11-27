@@ -27,7 +27,7 @@
           <div class="col-md-4">
             <label>วัน/เดือน/ปี เกิด</label>
             <input type="date" class="form-control border-input"
-                      v-model="user.dob">
+                      v-model="user.dob" max="1999-12-31">
             </input>
           </div>
         </div>
