@@ -289,8 +289,8 @@
                     <tfoot>
                         <tr class="text-center">
                             <td><strong>Total</strong></td>
-                            <td><strong>{{scb.totalIn.toFixed(2)}}</strong></td>
-                            <td><strong>{{scb.totalOut.toFixed(2)}}</strong></td>
+                            <td><strong>{{scb.totalIn.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}}</strong></td>
+                            <td><strong>{{scb.totalOut.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}}</strong></td>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -316,8 +316,8 @@
                     <tfoot>
                         <tr class="text-center">
                             <td><strong>Total</strong></td>
-                            <td><strong>{{kbank.totalIn.toFixed(2)}}</strong></td>
-                            <td><strong>{{kbank.totalOut.toFixed(2)}}</strong></td>
+                            <td><strong>{{kbank.totalIn.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}}</strong></td>
+                            <td><strong>{{kbank.totalOut.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}}</strong></td>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -410,7 +410,6 @@
       </form>
     </div>
   </div>
-
   <div v-else-if="state==2" class="card">
     <div class="header">
       <h4 class="title">ข้อมูลรายได้</h4>
@@ -443,7 +442,6 @@
       </form>
     </div>
   </div>
-
   <div v-else-if="state==3" class="card">
     <div class="header">
       <h4 class="title">ภาระสินเชื่อ</h4>
@@ -548,7 +546,11 @@
     methods: {
       next () {
         if (this.state < this.allState) {
-          this.state += 1
+          if (this.user.firstname === '' || this.user.lastname === '' || this.user.dob === '') {
+            return alert('กรุณากรอกข้อมูลให้ครบ')
+          } else {
+            this.state += 1
+          }
         } else {
           this.user.age = this.getAge(this.user.dob)
           var url = window.api_host + 'update_profile'
@@ -595,14 +597,16 @@
         ws.onmessage = function (evt) {
           var receivedMsg = evt.data
           console.log(receivedMsg)
-          that.statement()
+          var data = JSON.parse(receivedMsg)
+          console.log(data)
+          that.statement(data)
         }
         ws.onclose = function () {
           alert('connection is close')
         }
       },
       connectKBANK () {
-        var key = Math.random().toString(36).substr(2, 5)
+        var key = 'tmp' + Math.random().toString(36).substr(2, 5)
         this.init_websocket(key.toString())
         var url = window.api_host + 'bank'
         var data = {'bank': 'kbank', 'username': this.user.kbankUsername, 'password': this.user.kbankPassword, 'key': key}
@@ -622,10 +626,11 @@
         })
       },
       connectSCB () {
-        var key = Math.random().toString(36).substr(2, 5)
+        // var key = 'tmp' + Math.random().toString(36).substr(2, 5)
+        var key = this.user.email + ':scb'
         this.init_websocket(key.toString())
         var url = window.api_host + 'bank'
-        var data = {'bank': 'scb', 'username': this.user.kbankUsername, 'password': this.user.kbankPassword, 'key': key}
+        var data = {'bank': 'scb', 'username': this.user.scbUsername, 'password': this.user.scbPassword, 'key': key}
         axios.post(
           url,
           data,
@@ -646,46 +651,54 @@
         var age = now.getFullYear() - new Date(date).getFullYear()
         return age
       },
-      statement () {
-        var data = {job_type: 'scb', data: [{note: 'ค่าธรรมเนียม', cheque: '', withdraw: -199.00, desc: 'FE', balance: +130.52, via: 'SMS', date: '31/08/2016', deposit: 250.00, time: '06:42'}, {note: 'ค่าธรรมเนียม', cheque: '', withdraw: -199.00, desc: 'FE', balance: +130.52, via: 'SMS', date: '31/08/2016', deposit: 8500.00, time: '06:42'}, {note: 'ค่าธรรมเนียม', cheque: '', withdraw: -199.00, desc: 'FE', balance: +130.52, via: 'SMS', date: '31/09/2016', deposit: 8500.00, time: '06:42'}]}
-        console.log(data)
+      toNum (value) {
+        if (!value.trim().length) {
+          value = 0.00
+          return value
+        } else {
+          value = Number(value.replace(/[^\d.]/g, ''))
+          return value
+        }
+      },
+      statement (data) {
         if (data.job_type === 'kbank') {
           this.$store.state.bank.kbank = false
-          this.summary(data.data, data.job_type)
         } else if (data.job_type === 'scb') {
           this.$store.state.bank.scb = false
+        }
+        if (data.success) {
           this.summary(data.data, data.job_type)
+        } else {
+          alert(data.error_msg)
         }
       },
       summary (data, jobType) {
+        var that = this
         this.kbank.data = []
         this.scb.data = []
         data.map(function (current, index, array) {
           current.m = current.date.substring(3, 5)
           current.y = current.date.substring(6, 10)
         })
-
-        var monthly = {'00': '', '01': '', '02': '', '03': '', '04': '', '05': '', '06': '', '07': '', '08': '', '09': '', '10': '', '11': ''}
-        var withdraw = {'00': 0.00, '01': 0.00, '02': 0.00, '03': 0.00, '04': 0.00, '05': 0.00, '06': 0.00, '07': 0.00, '08': 0.00, '09': 0.00, '10': 0.00, '11': 0.00}
-        var deposit = {'00': 0.00, '01': 0.00, '02': 0.00, '03': 0.00, '04': 0.00, '05': 0.00, '06': 0.00, '07': 0.00, '08': 0.00, '09': 0.00, '10': 0.00, '11': 0.00}
-
+        var monthly = {'12': '', '01': '', '02': '', '03': '', '04': '', '05': '', '06': '', '07': '', '08': '', '09': '', '10': '', '11': ''}
+        var withdraw = {'12': 0.00, '01': 0.00, '02': 0.00, '03': 0.00, '04': 0.00, '05': 0.00, '06': 0.00, '07': 0.00, '08': 0.00, '09': 0.00, '10': 0.00, '11': 0.00}
+        var deposit = {'12': 0.00, '01': 0.00, '02': 0.00, '03': 0.00, '04': 0.00, '05': 0.00, '06': 0.00, '07': 0.00, '08': 0.00, '09': 0.00, '10': 0.00, '11': 0.00}
         data.forEach(function (obj) {
-          withdraw[obj.m] = withdraw[obj.m] + obj.withdraw
-          deposit[obj.m] = deposit[obj.m] + obj.deposit
+          withdraw[obj.m] = withdraw[obj.m] + that.toNum(obj.withdraw)
+          deposit[obj.m] = deposit[obj.m] + that.toNum(obj.deposit)
           monthly[obj.m] = obj.m + '/' + obj.y
         })
-
         for (var p in monthly) {
           if (monthly[p] !== '') {
             if (jobType === 'kbank') {
               this.kbank.totalIn += deposit[p]
               this.kbank.totalOut += withdraw[p]
-              this.kbank.data.push({monthly: monthly[p], withdraw: withdraw[p].toFixed(2), deposit: deposit[p].toFixed(2)})
+              this.kbank.data.push({monthly: monthly[p], withdraw: withdraw[p].toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,'), deposit: deposit[p].toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')})
               this.kbank.flg = true
             } else if (jobType === 'scb') {
               this.scb.totalIn += deposit[p]
               this.scb.totalOut += withdraw[p]
-              this.scb.data.push({monthly: monthly[p], withdraw: Intl.NumberFormat().format(withdraw[p].toFixed(2)), deposit: deposit[p].toFixed(2)})
+              this.scb.data.push({monthly: monthly[p], withdraw: withdraw[p].toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,'), deposit: deposit[p].toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')})
               this.scb.flg = true
             }
           }
@@ -696,14 +709,27 @@
       },
       backBankDetail () {
         this.state = 3
+      },
+      searchJob () {
+        var url = window.api_host + 'jobs'
+        var data = {'key': this.user.email + ':scb'}
+        axios.post(
+          url,
+          data,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.success) {
+            alert('Statement SCB Complete')
+          }
+        })
       }
     },
     mounted: function () {
       this.setUser(evtBus.getUser())
       this.$sidebar.displaySidebar(false)
+      this.searchJob()
     }
   }
 </script>
 <style>
-
 </style>
