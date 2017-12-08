@@ -21,9 +21,6 @@ import 'bootstrap/dist/css/bootstrap.css'
 import './assets/sass/paper-dashboard.scss'
 import 'es6-promise/auto'
 import axios from 'axios'
-// import VueWebsocket from 'vue-websocket'
-// import VueNativeSock from 'vue-native-websocket'
-// import VueSocketio from 'vue-socket.io'
 
 // plugin setup
 Vue.use(VueRouter)
@@ -32,15 +29,6 @@ Vue.use(GlobalDirectives)
 Vue.use(Notifications)
 Vue.use(SideBar)
 
-// Vue.use(VueSocketio, 'ws://creden.co:8089')
-/*
-Vue.use(VueWebsocket, 'ws://creden.co:8089', {
-  headers: {'Origin': 'http//creden.co:8080', 'Access-Control-Allow-Credentials': 'true'}
-})
-*/
-/*
-Vue.use(VueNativeSock, 'ws://localhost:8089')
-*/
 // configure router
 const router = new VueRouter({
   routes, // short for routes: routes

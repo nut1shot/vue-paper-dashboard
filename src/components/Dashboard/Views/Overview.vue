@@ -21,7 +21,7 @@
     </div>
     <br>
     <div class="row">
-      <div v-for="stats in listCom" v-on:click="goVoucher(stats.title)">
+      <div v-for="stats in listCom" v-on:click="goVoucher(stats.code)">
         <stats-card v-if="stats.score <= $store.state.user.score">
           <div class="icon-big text-center" :class="`icon-${stats.type}`" slot="header">
             <img style="width: 100%;" :src="stats.path">
@@ -105,13 +105,14 @@
     created () {
     },
     methods: {
-      goVoucher (title) {
+      goVoucher (code) {
         console.log(this.$store.state.user.email)
         if (this.$store.state.user.email === '') {
           alert('please login')
           evtBus.user.userTmp = true
           window.location.href = '#/admin/register'
         } else {
+          this.$store.state.user.code = code
           window.location.href = '#/admin/citibank'
         }
       },
@@ -135,7 +136,8 @@
               value: 'ดอกเบี้ย 20%',
               footerText: 'Last day',
               footerIcon: 'ti-calendar',
-              score: 500
+              score: 500,
+              code: 1
             },
             {
               type: 'warning',
@@ -144,7 +146,7 @@
               value: 'ดอกเบี้ย 10%',
               footerText: 'Updated now',
               footerIcon: 'ti-reload',
-              score: 300
+              code: 2
             },
             {
               type: 'danger',
@@ -153,7 +155,7 @@
               value: 'ดอกเบี้ย 30%',
               footerText: 'In the last hour',
               footerIcon: 'ti-timer',
-              score: 300
+              code: 3
             }
           ]
         } else if (v === 'car') {
@@ -168,7 +170,8 @@
               value: 'ดอกเบี้ย 10%',
               footerText: 'Updated now',
               footerIcon: 'ti-reload',
-              score: 250
+              score: 250,
+              code: 4
             }
           ]
         } else {
@@ -180,25 +183,29 @@
               path: 'https://www.silkspan.com/images_new/crd_cc/card/card_citi_pla_re.gif',
               title: 'citibank',
               value: 'บัตรเครดิต ซิตี้รีวอร์ด',
-              score: 300
+              score: 300,
+              code: 5
             },
             {
               path: 'https://www.silkspan.com/images_new/crd_cc/card/citi_cash-back.gif',
               title: 'citibank',
               value: 'บัตรเครดิต ซิตี้ แคชแบ็ก แพลตตินั่ม',
-              score: 400
+              score: 400,
+              code: 6
             },
             {
               path: 'https://www.silkspan.com/images_new/crd_cc/card/citi_royal.gif',
               title: 'citibank',
               value: 'บัตรเครดิต ซิตี้รอยัลออร์คิดพลัส แพลตตินั่มซีเล็คท์',
-              score: 500
+              score: 500,
+              code: 7
             },
             {
               path: 'https://www.silkspan.com/images_new/crd_cc/card/citi_m.gif',
               title: 'citibank',
               value: 'บัตรเครดิต ซิตี้ เอ็ม วีซ่า',
-              score: 500
+              score: 500,
+              code: 8
             }
           ]
         }

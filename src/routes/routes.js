@@ -5,6 +5,7 @@ import NotFound from '../components/GeneralViews/NotFoundPage.vue'
 // Admin pages
 import FormCitibank from 'src/components/Dashboard/Views/FormCitibank.vue'
 import Blank from 'src/components/Dashboard/Views/Blank.vue'
+import Report from 'src/components/Dashboard/Views/Report.vue'
 import Overview from 'src/components/Dashboard/Views/Overview.vue'
 import UserProfile from 'src/components/Dashboard/Views/UserProfile.vue'
 import RegisterForm from 'src/components/Dashboard/Views/UserProfile/RegisterForm.vue'
@@ -45,6 +46,11 @@ const routes = [
         path: 'blank',
         name: 'blank',
         component: Blank
+      },
+      {
+        path: 'report',
+        name: 'รายงานผู้สมัครบัตร',
+        component: Report
       },
       {
         path: 'kyc',

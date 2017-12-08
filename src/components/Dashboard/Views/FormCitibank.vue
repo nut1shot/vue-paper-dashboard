@@ -17,9 +17,11 @@
 	    </div>
 	    <br>
 	    <button v-on:click="next" class="btn btn-info btn-fill btn-wd">ถัดไป</button>
+      <button v-on:click="webSocket" class="btn btn-info btn-fill btn-wd">webSocket</button>
 	</div>
 </template>
 <script>
+import VueWebsocket from 'vue-websocket'
 export default {
   data () {
     return {
@@ -28,6 +30,8 @@ export default {
     }
   },
   methods: {
+    webSocket () {
+    },
     next () {
       var validate = 0
       if ((this.loan < 0 || this.loan === '') && validate === 0) {
@@ -41,8 +45,25 @@ export default {
       if (validate === 1) {
         return 0
       } else {
-        alert('save')
-        window.location.href = '#/admin/blank'
+        var url = window.api_host + 'save_application'
+        var email = this.$store.state.user.email
+        var code = this.$store.state.user.code
+        var loan = this.loan
+        var monthPay = this.month_pay
+        var data = {'email': email, 'code': code, detail: {'loan': loan, 'monthPay': monthPay}}
+        console.log(data)
+        axios.post(
+          url,
+          data,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            alert(response.data.error_msg)
+            window.location.href = '#/admin/blank'
+          } else {
+            alert(response.data.error_msg)
+          }
+        })
       }
     }
   }

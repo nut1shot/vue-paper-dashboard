@@ -117,9 +117,15 @@
           </div>
         </div>
         <br>
-        <div class="text-left">
-            <button v-on:click="goToRegister" class="btn btn-info btn-fill btn-wd">Sign up</button>
-            <button v-on:click="login" class="btn btn-info btn-fill btn-wd">Log in</button>
+        <div class="row">
+            <div class="col-md-6">
+                <button v-on:click="login" class="btn btn-info btn-fill btn-wd">Log in</button>
+                <button v-on:click="goToRegister" class="btn btn-info btn-fill btn-wd text-right">Sign up</button>
+            </div>
+        </div>
+        <br>
+        <div class="text-center">
+            <button v-on:click="loginFacebook" class="btn btn-primary btn-fill btn-wd btn-block"><i class="fa fa-facebook-official"></i>Log in with Facebook</button>
         </div>
         <div class="clearfix"></div>
       </form>
@@ -156,6 +162,10 @@
         var url = window.api_host + 'register'
         if (this.user.password !== this.user.cPassword) {
           return alert('Password incorrect')
+        }
+
+        if (this.user.firstname === '' || this.user.lastname === '' || this.user.email === '' || this.user.dob === '' || this.user.password === '') {
+          return alert('กรุณากรอกข้อมูลให้ครบ')
         }
         console.log(this.user)
         this.state = 4
@@ -209,7 +219,6 @@
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         ).then((response) => {
           if (response.data.success) {
-            // alert('no error' + response.data.error_msg)
             console.log(response.data.data)
             if (response.data.data.score === undefined) {
             }
@@ -221,7 +230,7 @@
               evtBus.user.userTmp = false
               window.location.href = '#/admin/overview'
             } else {
-              window.location.href = '#/admin/overview'
+              window.location.href = '#/admin/profile'
             }
           } else {
             alert('error' + response.data.error_msg)
@@ -230,6 +239,45 @@
       },
       setUser (data) {
         this.user = data
+      },
+      loginFacebook () {
+        CordovaFacebook.login({
+          permissions: ['public_profile', 'user_likes'],
+          onSuccess: function (result) {
+            if (result.success) {
+              var data = {'accessToken': result.accessToken, 'userTmp': evtBus.user.userTmp}
+              var url = window.api_host + 'fb_login'
+              alert('accessToken:' + result.accessToken)
+              axios.post(
+              url,
+              data,
+              { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+              ).then((response) => {
+                if (response.data.success) {
+                  evtBus.setUser(response.data.data)
+                  localStorage.setItem('user', JSON.stringify(response.data.data))
+                  localStorage.setItem('user_login', response.data.data.email)
+                  if (evtBus.user.userTmp) {
+                    alert('Go')
+                    evtBus.user.userTmp = false
+                    window.location.href = '#/admin/overview'
+                  } else {
+                    window.location.href = '#/admin/overview'
+                  }
+                } else {
+                  alert('error' + response.data.error_msg)
+                }
+              })
+            }
+          },
+          onFailure: function (result) {
+            if (result.cancelled) {
+              alert('Cancel')
+            } else if (result.error) {
+              alert('There was an error:' + result.errorLocalized)
+            }
+          }
+        })
       }
     },
     beforeMount: function () {

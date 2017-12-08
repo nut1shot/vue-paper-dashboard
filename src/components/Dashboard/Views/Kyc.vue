@@ -46,7 +46,14 @@
     },
     methods: {
       submit () {
-        var url = window.api_host + 'ekyc'
+        if (this.user.citizenIdF === '' ||
+        this.user.citizenIdF === undefined ||
+        this.user.citizenIdB === '' ||
+        this.user.citizenIdB === undefined) {
+          return alert('กุรณากรอกข้อมูลให้ครบ')
+        }
+
+        var url = window.api_host + 'kyc'
         console.log(this.user)
         axios.post(
           url,
@@ -55,10 +62,11 @@
         ).then((response) => {
           if (response.data.success) {
             console.log(response.data)
-            if (response.data.death !== 1) {
-              alert('ตายไปแล้ว')
+            if (!response.data.death.valid) {
+              alert(response.data.death.stDesc)
             } else {
-              window.location.href = '#/admin/overview'
+              alert('ยืนยันตัวตนสำเร็จ')
+              window.location.href = '#/admin/profile'
             }
           } else {
             alert(response.data.error_msg)
