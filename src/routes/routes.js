@@ -5,11 +5,13 @@ import NotFound from '../components/GeneralViews/NotFoundPage.vue'
 // Admin pages
 import FormCitibank from 'src/components/Dashboard/Views/FormCitibank.vue'
 import Blank from 'src/components/Dashboard/Views/Blank.vue'
+import VerifyCard from 'src/components/Dashboard/Views/VerifyCard.vue'
 import Report from 'src/components/Dashboard/Views/Report.vue'
 import Overview from 'src/components/Dashboard/Views/Overview.vue'
 import UserProfile from 'src/components/Dashboard/Views/UserProfile.vue'
 import RegisterForm from 'src/components/Dashboard/Views/UserProfile/RegisterForm.vue'
 import Kyc from 'src/components/Dashboard/Views/Kyc.vue'
+import EkycDemo from 'src/components/Dashboard/Views/EkycDemo.vue'
 
 const routes = [
   {
@@ -56,6 +58,16 @@ const routes = [
         path: 'kyc',
         name: 'kyc',
         component: Kyc
+      },
+      {
+        path: 'verify',
+        name: 'verify',
+        component: VerifyCard
+      },
+      {
+        path: 'ekyc_demo',
+        name: 'ekyc_demo',
+        component: EkycDemo
       }
     ]
   },
