@@ -1,6 +1,6 @@
 <template>
-	<div class="card">
-	ekyc demo
+	<div class="card cam" id='cam' style='height:300px'>
+	xxxxxx	
     </div>
 </template>
 <script>
@@ -22,5 +22,10 @@
   }
 </script>
 <style>
-
+#cam {
+  background-color:pink;
+}
+body {
+ color:blue;
+}
 </style>
