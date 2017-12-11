@@ -1,0 +1,147 @@
+
+
+
+<div style="margin:auto; width:50%;">
+<select id="video_dev" onchange="chvdo(this[this.selectedIndex].value)" style="font-size:50px"></select>
+<input type="button" value="Take Photo" onclick="take_photo()" style="font-size:50px">
+</div>
+<hr/>
+
+<video id="video" autoplay></video>
+<hr/>
+<canvas id="canvas" ></canvas>
+
+<style>
+	#video{
+		border-style: solid;
+		border-color: coral;
+	}
+
+	#canvas{
+		border-style: solid;
+		border-color: green;
+	}
+</style>
+
+<script>
+function chvdo(deviceId)
+{
+  if (window.stream) {
+    window.stream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+   }
+
+  video.pause(); 
+  window.vdo_dev = deviceId;
+   
+  //var mediaConfig =  { video: true , deviceId: { exact: deviceId  } };
+  var mediaConfig =  {video: {deviceId: window.vdo_dev ? {exact: window.vdo_dev} : undefined}} 
+
+   navigator.mediaDevices.getUserMedia(mediaConfig).then(function(stream) {
+            //alert('getUserMedia')
+
+            video.src = window.URL.createObjectURL(stream);
+            window.stream = stream;
+          
+            //video.load();
+            video.play();   });
+
+}
+
+function init_camera_dropdown(){
+	 if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+            alert("Only Android device is supported on this demo!!!\n\nDetails : \nenumerateDevices() not supported.");
+            return;
+          }
+
+          var h = '';
+          // List cameras and microphones.
+          navigator.mediaDevices.enumerateDevices()
+            .then(function(devices) {
+              devices.forEach(function(device) {
+                //console.log(device.kind + ": " + device.label + " id = " + device.deviceId);
+                if(device.kind.indexOf('video')!=-1)
+                   {  
+                     console.log('found video ID : '+device.deviceId);
+                     window.vdo_dev = device.deviceId;
+                     h += '<option selected value="'+device.deviceId+'">'+device.label+'</option>';
+                     //h += '<option selected value="'+device.deviceId+'">'+device.deviceId+'</option>';
+                   }
+              });
+
+              var vdo_dev = document.getElementById('video_dev')
+              vdo_dev.innerHTML = h
+              chvdo(vdo_dev[vdo_dev.selectedIndex].value)
+
+            })
+            .catch(function(err) {
+              alert(err.name + ": " + err.message);
+            });
+}	
+
+function init_video()
+{
+	init_camera_dropdown();
+	var vdo_dev = document.getElementById('video_dev');
+
+
+
+	// Grab elements, create settings, etc.
+	var canvas     = document.getElementById('canvas');
+	window.context = canvas.getContext('2d');
+	window.video   = document.getElementById('video');
+
+	var mediaConfig =  {
+		video: {deviceId: window.vdo_dev ? {exact: window.vdo_dev} : undefined}
+	} 
+
+   alert('screen w/h'+ screen.width +' x +' + screen.height)
+
+
+	var w = vdo_w();
+	var h = vdo_h();
+	
+	video.width   = w
+	video.height  = h
+
+    canvas.width  = h
+    canvas.height = w
+
+   setTimeout(function(){	
+   var w = video.videoWidth
+   var h = video.videoHeight
+   
+   alert('video w/h'+ w +' x +' + h)
+   canvas.width = video.width  = w	   
+   canvas.height = video.height = h	   
+
+   }, 5000)
+}
+
+function vdo_h(){
+	var h = parseInt(screen.height/1);
+	//alert(h)
+	return h
+}
+function vdo_w(){
+    var ret = parseInt((4 * vdo_h()) / 3)
+	return ret
+
+}
+
+function take_photo(){
+  var w = video.videoWidth
+  var h = video.videoHeight
+  
+  context.drawImage(video, 0, 0, w, h) 	
+
+}
+
+
+
+init_video();
+
+
+
+</script>
