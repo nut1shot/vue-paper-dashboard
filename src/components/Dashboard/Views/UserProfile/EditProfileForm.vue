@@ -674,8 +674,11 @@
       },
       summary (data, jobType) {
         var that = this
-        this.kbank.data = []
-        this.scb.data = []
+        if (jobType === 'kbank') {
+          this.kbank.data = []
+        } else if (jobType === 'scb') {
+          this.scb.data = []
+        }
         data.map(function (current, index, array) {
           current.m = current.date.substring(3, 5)
           current.y = current.date.substring(6, 10)
