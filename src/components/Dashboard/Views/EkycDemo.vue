@@ -84,6 +84,7 @@
   export default {
     data () {
       return {
+        id: '001',
         results: '',
         step: 1,
         show_vdo: true,
@@ -107,11 +108,17 @@
         this.show_vdo = true
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
       },
-      savePicture: function () {
+      savePicture: function (n) {
         var canvas = document.getElementById('canvas')
         var img = canvas.toDataURL('image/png')
         img = img.substring(img.indexOf(',') + 1)
-        // alert(img)
+
+        alert(img)
+        var data = {img: img, id: this.id}
+        var that = this
+        that.savePicture2()
+      },
+      savePicture2: function () {
         var n = 0
         if (this.step === 3) {
           n = 1
