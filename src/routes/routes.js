@@ -12,6 +12,7 @@ import UserProfile from 'src/components/Dashboard/Views/UserProfile.vue'
 import RegisterForm from 'src/components/Dashboard/Views/UserProfile/RegisterForm.vue'
 import Kyc from 'src/components/Dashboard/Views/Kyc.vue'
 import EkycDemo from 'src/components/Dashboard/Views/EkycDemo.vue'
+import Demo2 from 'src/components/Dashboard/Views/Demo2.vue'
 
 const routes = [
   {
@@ -68,6 +69,11 @@ const routes = [
         path: 'ekyc_demo',
         name: 'Ekyc Demo....',
         component: EkycDemo
+      },
+      {
+        path: 'demo2',
+        name: 'Ekyc Demo2....',
+        component: Demo2
       }
     ]
   },
