@@ -128,10 +128,15 @@
           ).then((response) => {
             if (response.data.success) {
               that.card_no = response.data.card_id
-              that.faceId1 = response.data.face[0].faceId
               alert(that.card_no)
-              alert(that.faceId1)
-              that.savePicture2()
+              console.log(response.data.face)
+              if (response.data.face.length > 0) {
+                that.faceId1 = response.data.face[0].faceId
+                alert(that.faceId1)
+                that.savePicture2()
+              } else {
+                alert('Cannot detect face')
+              }
             } else {
               alert('error')
             }

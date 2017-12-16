@@ -51,13 +51,14 @@
         <!-- step 1 and 2 -->
 		<div class="cam" id='cam' style='height:200px' v-show='step<3'>
 			<center>
-            <select id="video_dev" onchange="chvdo(this[this.selectedIndex].value)"
+            <select id="video_dev" onchange="chvdo1(this[this.selectedIndex].value)"
                style="font-size:16pt">
 				<option>choose camera</option>
             </select>
             <hr/>
             <video id="video" autoplay v-show='show_vdo'></video>
             <canvas id="canvas" v-show='!show_vdo'></canvas>
+            <canvas id="canvas2" v-show='false'></canvas>
             <hr/>
 
 			<div style='background-color:'>
@@ -109,14 +110,27 @@
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
       },
       savePicture: function (n) {
-        var canvas = document.getElementById('canvas')
+        var canvas = document.getElementById('canvas2')
         var img = canvas.toDataURL('image/png')
         img = img.substring(img.indexOf(',') + 1)
 
-        alert(img)
+        // alert(img)
         var data = {img: img, id: this.id}
         var that = this
-        that.savePicture2()
+        var url = window.api_host + 'demo_card'
+        axios.post(
+          url,
+          data,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            that.id = response.data.card_id
+            alert(that.id)
+            that.savePicture2()
+          } else {
+            alert('error')
+          }
+        })
       },
       savePicture2: function () {
         var n = 0
@@ -130,8 +144,11 @@
       takePicture: function () {
         var w = window.video.videoWidth
         var h = window.video.videoHeight
-        w = parseInt(w / 2.5)
-        h = parseInt(h / 2.5)
+        // hidden webcam
+        var ctx2 = document.getElementById('canvas2').getContext('2d')
+        ctx2.drawImage(video, 0, 0, w, h)
+        w = parseInt(w / 5.0)
+        h = parseInt(h / 5.0)
         context.drawImage(video, 0, 0, w, h)
         this.show_vdo = false
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
@@ -139,12 +156,28 @@
     },
     beforeMount: function () {
     },
-    created: function () {
+    mounted: function () {
+      document.getElementById('video').addEventListener('play', function () {
+        var w = video.videoWidth
+        var h = video.videoHeight
+        // hidden canvas
+        var c2 = document.getElementById('canvas2')
+        c2.width = w
+        c2.height = h
+
+        // alert('video w/h' + w + ' x ' + h)
+        if (w < 1) return
+        w = parseInt(w / 5.0)
+        h = parseInt(h / 5.0)
+
+        canvas.width = video.width = w
+        canvas.height = video.height = h
+      })
       initCameraDropdown()
     }
   }
 
-window.chvdo = function (deviceId) {
+window.chvdo1 = function (deviceId) {
     if (window.stream) {
       window.stream.getTracks().forEach(function (track) {
         track.stop()
@@ -153,13 +186,24 @@ window.chvdo = function (deviceId) {
 
     video.pause()
     window.vdo_dev = deviceId
-    var mediaConfig = {video: {deviceId: window.vdo_dev ? {exact: window.vdo_dev} : undefined}}
+    var hdConstraints = {
+      video: {
+        mandatory: {
+          // minWidth: 1280,
+          // minHeight: 720
+          minWidth: 1920,
+          minHeight: 1080,
+          sourceId: deviceId
+        }
+      }
+    }
+    // var mediaConfig = {video: {deviceId: window.vdo_dev ? {exact: window.vdo_dev} : undefined}}
+    var mediaConfig = hdConstraints
 
     navigator.mediaDevices.getUserMedia(mediaConfig).then(function (stream) {
       video.src = window.URL.createObjectURL(stream)
       window.stream = stream
       video.play()
-      initVideo()
     })
 }
 function initCameraDropdown () {
@@ -185,9 +229,7 @@ function initCameraDropdown () {
 
       var vdoDev = document.getElementById('video_dev')
       vdoDev.innerHTML = h
-      // alert(vdoDev + '\n' + h)
       initVideo()
-      // window.chvdo(vdoDev[vdoDev.selectedIndex].value)
     })
 }
 
@@ -197,45 +239,23 @@ function initVideo () {
       // Grab elements, create settings, etc.
       window.context = canvas.getContext('2d')
       window.video = document.getElementById('video')
-      // alert('exit initVdo')
       var vdoDev = document.getElementById('video_dev')
-      window.chvdo(vdoDev[vdoDev.selectedIndex].value)
+      window.chvdo1(vdoDev[vdoDev.selectedIndex].value)
     } else {
-      // alert('screen w/h' + screen.width + ' x +' + screen.height)
-      var w = 5 // vdoW()
-      var h = 5 // vdoH()
-
-      video.width = w
-      video.height = h
-
-      canvas.width = h
-      canvas.height = w
-
-      setTimeout(function () {
-        var w = video.videoWidth
-        var h = video.videoHeight
-
-        w = parseInt(w / 2.5)
-        h = parseInt(h / 2.5)
-
-        // alert('video w/h' + w + ' x ' + h)
-        canvas.width = video.width = w
-        canvas.height = video.height = h
-      }, 5000)
+      canvas.width = video.width = 1
+      canvas.height = video.height = 1
     }
 }
 
 function vdoH () {
     // var h = parseInt(screen.height / 1)
-    return 300
+    var initialH = 1
+    return initialH
 }
 
 function vdoW () {
     var ret = parseInt((4 * vdoH()) / 3)
     return ret
-}
-
-function myfunc () {
 }
 </script>
 <style>
