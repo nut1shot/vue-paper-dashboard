@@ -106,8 +106,11 @@
         show_vdo: true,
         can_save_cam: false,
         can_cancel_cam: false,
+        frontCam: null, // store front camera deviceId
+        backCam: null, // back camera
         card_no: '',
-        face_pct: '%'
+        face_pct: '%',
+        faceId1: ''
       }
     },
     methods: {
@@ -132,7 +135,13 @@
         // alert(img)
         var data = {img: img, id: this.id}
         var that = this
-        var url = window.api_host + 'demo_card'
+        var url = window.api_host
+        if (this.step === 1) {
+          url = url + 'demo_card'
+        } else if (this.step === 2) {
+          url = url + 'demo_selfie'
+          data.faceId1 = this.faceId1
+        }
         that.isLoading = true
         axios.post(
           url,
@@ -141,12 +150,23 @@
         ).then((response) => {
           that.isLoading = false
           if (response.data.success) {
-            if (response.data.card_id && response.data.card_id.length === 13) {
-              that.card_no = response.data.card_id
+            if (this.step === 1) {
+              if (response.data.card_id && response.data.card_id.length === 13) {
+                that.card_no = response.data.card_id
+              } else {
+                alert('unnable to detect id card information, please retake photo.')
+                that.retake()
+              }
+              if (response.data.face.length > 0) {
+                that.faceId1 = response.data.face[0].faceId
+                that.savePicture2()
+              } else {
+                alert('unnable to detect face, please retake photo.')
+                that.retake()
+              }
+            } else if (this.step === 2) {
+              that.face_pct = response.data.face.confidence * 100
               that.savePicture2()
-            } else {
-              alert('unnable to detect id card information, please retake photo.')
-              that.retake()
             }
           } else {
             alert('error')
@@ -194,7 +214,7 @@
         canvas.width = video.width = w
         canvas.height = video.height = h
       })
-      initCameraDropdown()
+      initCameraDropdown(this)
     }
   }
 
@@ -227,7 +247,7 @@ window.chvdo1 = function (deviceId) {
       video.play()
     })
 }
-function initCameraDropdown () {
+function initCameraDropdown (app) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
       alert('Only Android device is supported on this demo!!!\n\nDetails : \nenumerateDevices() not supported.')
       return false
@@ -236,15 +256,25 @@ function initCameraDropdown () {
     var h = ''
     // List cameras and microphones.
     navigator.mediaDevices.enumerateDevices()
-    .then(function (devices) {
+    .then((devices) => {
       var ct = 0
-      devices.forEach(function (device) {
+      devices.forEach((device) => {
         // alert(device.kind + ': ' + device.label + ' id = ' + device.deviceId)
         if (device.kind.indexOf('video') !== -1) {
           console.log('found video ID : ' + device.deviceId)
           window.vdo_dev = device.deviceId
           // h += '<option selected value="' + device.deviceId + '">' + device.label + '</option>'
-          h += '<option selected value="' + device.deviceId + '">Camera' + (++ct) + '</option>'
+          // alert(JSON.stringify(device))
+          var name = 'Camera' + (++ct)
+          if (device.facingMode === 'environment' || device.label.indexOf('back') !== -1) {
+            name += ' Back'
+            app.backCam = device.decviceId
+          }
+          if (device.facingMode === 'user' || device.label.indexOf('front') !== -1) {
+            name += ' Front'
+            app.frontCam = device.decviceId
+          }
+          h += '<option selected value="' + device.deviceId + '">' + name + '</option>'
         }
       })
 
