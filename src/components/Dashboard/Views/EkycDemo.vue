@@ -70,8 +70,13 @@
 				<option>choose camera</option>
             </select>
             <hr/>
-            <video id="video" autoplay v-show='show_vdo'></video>
-            <canvas id="canvas" v-show='!show_vdo'></canvas>
+            <div id="videoDiv">
+				<video id="video" autoplay v-show='show_vdo'></video>
+				<div id='canvasBg'>xxxdsadadaddadadadadasdasda</div> 
+				<canvas id="canvas" v-show='!show_vdo'>
+				</canvas>
+            </div>
+
             <canvas id="canvas2" v-show='false'></canvas>
             <hr/>
 
@@ -335,6 +340,20 @@ function vdoW () {
 }
 </script>
 <style>
+#videoDiv {
+position: relative;
+}
+
+#canvasBg {
+background: blue;
+position: absolute;
+top: 0;
+left: 0;
+height: 100%;
+width: 100%;
+opacity: 0.2;
+}
+
 #cam_btn {
   background-color:grey;
 }
