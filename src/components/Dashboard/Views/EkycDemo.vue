@@ -124,9 +124,13 @@
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         ).then((response) => {
           if (response.data.success) {
-            that.id = response.data.card_id
-            alert(that.id)
-            that.savePicture2()
+            if (response.data.card_id && response.data.card_id.length === 13) {
+              that.card_no = response.data.card_id
+              that.savePicture2()
+            } else {
+              alert('unnable to detect id card information, please retake photo.')
+              that.retake()
+            }
           } else {
             alert('error')
           }

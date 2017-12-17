@@ -67,7 +67,7 @@ const routes = [
       },
       {
         path: 'ekyc_demo',
-        name: 'Ekyc Demo....',
+        name: 'Ekyc Demo',
         component: EkycDemo
       },
       {
