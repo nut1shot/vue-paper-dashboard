@@ -245,8 +245,8 @@ window.chvdo1 = function (deviceId) {
         mandatory: {
           // minWidth: 1280,
           // minHeight: 720
-          minWidth: 192,
-          minHeight: 108,
+          minWidth: 1920,
+          minHeight: 1080,
           sourceId: deviceId
         }
       }
