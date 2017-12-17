@@ -145,7 +145,7 @@
         var img = canvas.toDataURL('image/png')
         img = img.substring(img.indexOf(',') + 1)
 
-        // alert(img)
+        // alert('img\n' + img)
         var data = {img: img, id: this.id}
         var that = this
         var url = window.api_host
@@ -214,13 +214,17 @@
       document.getElementById('video').addEventListener('play', function () {
         var w = video.videoWidth
         var h = video.videoHeight
+
+        /* handle w,h = 0 when play event is fired AFTER the 1ST time
+        todo : find out why */
+        // alert('video w/h' + w + ' x ' + h)
+        if (w < 1) return
+
         // hidden canvas
         var c2 = document.getElementById('canvas2')
         c2.width = w
         c2.height = h
 
-        // alert('video w/h' + w + ' x ' + h)
-        if (w < 1) return
         w = parseInt(w / 5.0)
         h = parseInt(h / 5.0)
 
