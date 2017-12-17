@@ -115,13 +115,26 @@
     },
     methods: {
       to: function (n) {
-        this.step = n // alert(n)
+        this.step = n
         if (this.step < 3) {
           this.show_vdo = true
+          var activeCam = null
+          if (this.step === 1 && this.backCam) {
+            activeCam = this.backCam
+          }
+          if (this.step === 2 && this.frontCam) {
+            activeCam = this.frontCam
+          }
+          this.setActiveCam(activeCam)
         } else {
           this.show_vdo = false
         }
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
+      },
+      setActiveCam: function (camId) {
+        if (camId) {
+          window.chvdo1(camId)
+        }
       },
       retake: function (n) {
         this.show_vdo = true
@@ -232,8 +245,8 @@ window.chvdo1 = function (deviceId) {
         mandatory: {
           // minWidth: 1280,
           // minHeight: 720
-          minWidth: 1920,
-          minHeight: 1080,
+          minWidth: 192,
+          minHeight: 108,
           sourceId: deviceId
         }
       }
@@ -268,11 +281,11 @@ function initCameraDropdown (app) {
           var name = 'Camera' + (++ct)
           if (device.facingMode === 'environment' || device.label.indexOf('back') !== -1) {
             name += ' Back'
-            app.backCam = device.decviceId
+            app.backCam = device.deviceId
           }
           if (device.facingMode === 'user' || device.label.indexOf('front') !== -1) {
             name += ' Front'
-            app.frontCam = device.decviceId
+            app.frontCam = device.deviceId
           }
           h += '<option selected value="' + device.deviceId + '">' + name + '</option>'
         }
