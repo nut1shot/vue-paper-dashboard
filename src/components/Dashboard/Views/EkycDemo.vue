@@ -11,8 +11,22 @@
             </center>
 		</div>
 
+
+        <!-- Loading div -->
+       <div v-if='isLoading'>
+         <div style='height:100px'></div><br/>
+         <center>
+		 <button type="button" class="btn btn-wd btn-success"> 
+			<span class="btn-label"> 	  
+			 <i class="fa fa-circle-o-notch fa-spin"></i> 	
+			</span> Plase Wait ...
+		 </button>
+         </center>
+       </div>
+
+
         <!-- Form in step 3 -->
-		<div class="cam" id='form' style='height:200px' v-if='step===3'>
+		<div class="cam" id='form' style='height:200px' v-if='step===3 && !isLoading'>
 		   <table border='1'>
                <tr>
                    <td>CARD NO</td>
@@ -49,7 +63,7 @@
         <!-- end form -->
 
         <!-- step 1 and 2 -->
-		<div class="cam" id='cam' style='height:200px' v-show='step<3'>
+		<div class="cam" id='cam' style='height:200px' v-show='step<3 && !isLoading'>
 			<center>
             <select id="video_dev" onchange="chvdo1(this[this.selectedIndex].value)"
                style="font-size:16pt">
@@ -85,6 +99,7 @@
   export default {
     data () {
       return {
+        isLoading: false,
         id: '001',
         results: '',
         step: 1,
@@ -118,11 +133,13 @@
         var data = {img: img, id: this.id}
         var that = this
         var url = window.api_host + 'demo_card'
+        that.isLoading = true
         axios.post(
           url,
           data,
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         ).then((response) => {
+          that.isLoading = false
           if (response.data.success) {
             if (response.data.card_id && response.data.card_id.length === 13) {
               that.card_no = response.data.card_id
