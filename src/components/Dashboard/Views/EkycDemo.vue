@@ -134,6 +134,14 @@
       setActiveCam: function (camId) {
         if (camId) {
           window.chvdo1(camId)
+          var vdoDev = document.getElementById('video_dev')
+          // sync up dropdown
+          for (var i = 0; i < vdoDev.length; i++) {
+            var e = vdoDev[i]
+            if (e.value === camId) {
+              vdoDev.selectedIndex = i
+            }
+          }
         }
       },
       retake: function (n) {
