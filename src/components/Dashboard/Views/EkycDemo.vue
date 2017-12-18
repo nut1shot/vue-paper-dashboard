@@ -72,7 +72,11 @@
             <hr/>
             <div id="videoDiv">
 				<video id="video" autoplay v-show='show_vdo'></video>
-				<div id='canvasBg'>xxxdsadadaddadadadadasdasda</div> 
+				<div id='canvasBg'>
+                     <div id='canvasOverlay'>
+                        <img src='static/img/sample_card.png' height='200' v-if='showCardOverlay'>
+                    </div>
+                </div> 
 				<canvas id="canvas" v-show='!show_vdo'>
 				</canvas>
             </div>
@@ -105,6 +109,7 @@
     data () {
       return {
         isLoading: false,
+        showCardOverlay: false,
         id: '001',
         results: '',
         step: 1,
@@ -135,6 +140,13 @@
           this.show_vdo = false
         }
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
+        this.showOverlay()
+      },
+      showOverlay: function () {
+        if (this.step === 1) {
+          this.showCardOverlay = true
+          setTimeout(() => { this.showCardOverlay = false }, 6000)
+        }
       },
       setActiveCam: function (camId) {
         if (camId) {
@@ -152,6 +164,7 @@
       retake: function (n) {
         this.show_vdo = true
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
+        this.showOverlay()
       },
       savePicture: function (n) {
         var canvas = document.getElementById('canvas2')
@@ -224,6 +237,7 @@
     beforeMount: function () {
     },
     mounted: function () {
+      var that = this
       document.getElementById('video').addEventListener('play', function () {
         var w = video.videoWidth
         var h = video.videoHeight
@@ -238,11 +252,17 @@
         c2.width = w
         c2.height = h
 
+        // canvas overlay
+        var ov = document.getElementById('canvasOverlay')
+
         w = parseInt(w / 5.0)
         h = parseInt(h / 5.0)
 
         canvas.width = video.width = w
         canvas.height = video.height = h
+        ov.style.width = (w - 0) + 'px'
+        ov.style.height = (h - 0) + 'px'
+        that.showOverlay()
       })
       initCameraDropdown(this)
     }
@@ -344,14 +364,18 @@ function vdoW () {
 position: relative;
 }
 
+#canvasOverlay {
+/* background: green; */
+}
+
 #canvasBg {
-background: blue;
+/* background: blue; */
 position: absolute;
 top: 0;
 left: 0;
 height: 100%;
 width: 100%;
-opacity: 0.2;
+opacity: 0.5;
 }
 
 #cam_btn {
