@@ -46,7 +46,25 @@
 			   </tr>
                <tr>
                    <td>Date Of Birth(31/12/2522)</td>
-                   <td><input type=''></td>
+                   <td>
+                        <input v-model='day' size='4'>
+                        <select v-model='mon'>
+                            <option value="">เดือน</option>    
+                            <option value="๋Jan">ม.ค.</option>
+                            <option value="Feb">ก.พ.</option>
+                            <option value="Mar">มี.ค.</option>
+                            <option value="Apr">เม.ษ.</option>
+                            <option value="May">พ.ค.</option>
+                            <option value="Jun">มิ.ย.</option>
+                            <option value="Jul">ก.ค.</option>
+                            <option value="Aug">ส.ค.</option>
+                            <option value="Sep">ก.ย.</option>
+                            <option value="Oct">ต.ค.</option>
+                            <option value="Nov">พ.ย.</option>
+                            <option value="Dec">ธ.ค.</option>
+                        </select>
+                        <input v-model='year' size='6'>
+                   </td>
 			   </tr>
                <tr>
                    <td>LASER CODE</td>
@@ -120,7 +138,10 @@
         backCam: null, // back camera
         card_no: '',
         face_pct: '%',
-        faceId1: ''
+        faceId1: '',
+        day: '',
+        mon: '',
+        year: ''
       }
     },
     methods: {
@@ -190,8 +211,11 @@
           that.isLoading = false
           if (response.data.success) {
             if (this.step === 1) {
-              if (response.data.card_id && response.data.card_id.length === 13) {
+              if (response.data.card_id && response.data.card_id.length === 13 && response.data.dob) {
                 that.card_no = response.data.card_id
+                that.day = response.data.dob.day
+                that.mon = response.data.dob.mon
+                that.year = Number(response.data.dob.year) + 543
               } else {
                 alert('unnable to detect id card information, please retake photo.')
                 that.retake()
