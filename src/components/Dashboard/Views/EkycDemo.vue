@@ -256,6 +256,7 @@
         this.isConfirming = false
         this.can_rec = true
         if (boo) {
+          window.video.pause()
           this.to(4)
         }
       },
