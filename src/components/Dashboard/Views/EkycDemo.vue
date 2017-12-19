@@ -4,10 +4,12 @@
             <center>
 			<button @click='to(1)'>[1]</button> | 
             <button @click='to(2)'>[2]</button> |
-            <button @click='to(3)'>[3]</button><BR/><BR/>
+            <button @click='to(3)'>[3]</button> |
+            <button @click='to(4)'>[4]</button><BR/><BR/>
             <font v-if='step==1' color="white">STEP1 : ID CARD</font> 
             <font v-if='step==2' color="white">STEP2 : SELFIE</font> 
-            <font v-if='step==3' color="white">STEP3 : FILL-IN FORM</font> 
+            <font v-if='step==3' color="white">STEP3 : Record VDO</font> 
+            <font v-if='step==4' color="white">STEP4 : FILL-IN FORM</font> 
             </center>
 		</div>
 
@@ -25,9 +27,9 @@
        </div>
 
 
-        <!-- Form in step 3 -->
-		<div class="cam" id='form' style='height:200px' v-if='step===3 && !isLoading'>
-		   <table border='1'>
+        <!-- Form in step 4 -->
+		<div class="cam" id='form' style='height:200px' v-if="step===4 && !isLoading">
+		   <table v-if="kyc===''"  border='1'>
                <tr>
                    <td>CARD NO</td>
                    <td><input v-model='card_no'></td>
@@ -38,11 +40,11 @@
 			   </tr>
                <tr>
                    <td>FName</td>
-                   <td><input type=''></td>
+                   <td><input type='' v-model='firstname'></td>
 			   </tr>
                <tr>
                    <td>LName</td>
-                   <td><input type=''></td>
+                   <td><input type='' v-model='lastname'></td>
 			   </tr>
                <tr>
                    <td>Date Of Birth(31/12/2522)</td>
@@ -50,7 +52,7 @@
                         <input v-model='day' size='4'>
                         <select v-model='mon'>
                             <option value="">เดือน</option>    
-                            <option value="๋Jan">ม.ค.</option>
+                            <option value="Jan">ม.ค.</option>
                             <option value="Feb">ก.พ.</option>
                             <option value="Mar">มี.ค.</option>
                             <option value="Apr">เม.ษ.</option>
@@ -68,31 +70,64 @@
 			   </tr>
                <tr>
                    <td>LASER CODE</td>
-                   <td><input type=''></td>
+                   <td><input type='' v-model='laser_code'></td>
 			   </tr>
                <tr>
-                   <td align='center' colspan='2'><button>SUBMIT</button></td>
+                   <td align='center' colspan='2'><button type="button" @click='submit'>SUBMIT</button></td>
 			   </tr>
            </table>	
       
-           <div v-if="results!==''">RESULTS : </div>
+           <div v-if="kyc!=='' ">RESULTS : 
+             <p>
+               ชื่อ: {{firstname}}
+             </p>
+             <p>
+               นามสกุล: {{lastname}}
+             </p>
+             <p>
+               สถานะ: {{kyc.death.stDesc}}
+             </p>
+             <p v-if="kyc.tax.tax1.formDetailList.length > 0">
+               tax1: {{kyc.tax.tax1.formDetailList[0].effDate}}
+             </p>
+             <p v-else>
+               tax1: ไม่จ่ายภาษี
+             </p>
+             <p v-if="kyc.tax.tax2.formDetailList.length > 0">
+               tax2: {{kyc.tax.tax2.formDetailList[0].effDate}}
+             </p>
+             <p v-else>
+               tax2: ไม่จ่ายภาษี
+             </p>
+             <button type="button" class="btn btn-wd btn-success" @click='setKyc()'>BACK</button>
+           </div>
         </div>
 
         <!-- end form -->
 
-        <!-- step 1 and 2 -->
-		<div class="cam" id='cam' style='height:200px' v-show='step<3 && !isLoading'>
+        <!-- step 1,2 and 3 -->
+		<div class="cam" id='cam' style='height:200px' v-show='step<4 && !isLoading'>
 			<center>
-            <select id="video_dev" onchange="chvdo1(this[this.selectedIndex].value)"
+            <select id="video_dev" v-show="step<3" onchange="chvdo1(this[this.selectedIndex].value)"
                style="font-size:16pt">
 				<option>choose camera</option>
             </select>
+
+            <!-- reader -->
+            <span v-if="step===3">Read Texts Below clearly:<br/>
+                  <span>
+                       Read &gt;&gt;  <span style='background-color:red;color:white;font-size:150%'>{{randomText}}</span>
+                  </span>
+            </span>
+            <!-- end -->
+
             <hr/>
             <div id="videoDiv">
 				<video id="video" autoplay v-show='show_vdo'></video>
 				<div id='canvasBg'>
                      <div id='canvasOverlay'>
                         <img src='static/img/sample_card.png' height='200' v-if='showCardOverlay'>
+                        <span v-if='showRecOverlay' style='color:red;font-size:150%'>Recording ...</span>
                     </div>
                 </div> 
 				<canvas id="canvas" v-show='!show_vdo'>
@@ -104,17 +139,20 @@
 
 			<div style='background-color:'>
 			   <table border="0" width="100%">
-				  <tr>
+				  <tr v-if="step<3">
 					<td width='33%'><button @click='savePicture' v-if='can_save_cam'>Use this photo</button></td>
 					<td align='center' ><button v-if='show_vdo' @click='takePicture'>Take Picture</button></td>
 					<td width='33%' align='right'><button @click='retake' v-if='can_cancel_cam'>Retake</button></td>
+				 </tr> 
+				  <tr v-if="step===3">
+					<td align='center'><button v-if='can_rec' @click='recordVdo'>REC</button></td>
 				 </tr> 
 			   </table>
 			</div>
 
             </center>
 		</div>
-        <!-- step 1 and 2 --> 
+        <!-- step 1,2 and 3 --> 
 
 	
     </div>
@@ -137,17 +175,26 @@
         frontCam: null, // store front camera deviceId
         backCam: null, // back camera
         card_no: '',
+        laser_code: '',
+        firstname: '',
+        lastname: '',
         face_pct: '%',
         faceId1: '',
         day: '',
         mon: '',
-        year: ''
+        year: '',
+        randomText: '',
+        arr_txt: ['1234', 'ABCK', 'GF13'],
+        can_rec: false,
+        showRecOverlay: false,
+        recordRTC: null,
+        kyc: ''
       }
     },
     methods: {
       to: function (n) {
         this.step = n
-        if (this.step < 3) {
+        if (this.step < 4) {
           this.show_vdo = true
           var activeCam = null
           if (this.step === 1 && this.backCam) {
@@ -156,22 +203,60 @@
           if (this.step === 2 && this.frontCam) {
             activeCam = this.frontCam
           }
+          if (this.step === 3) {
+            if (this.frontCam) {
+              activeCam = this.frontCam
+            }
+            this.can_rec = true
+            this.randomText = ''
+          }
           this.setActiveCam(activeCam)
         } else {
           this.show_vdo = false
         }
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
-        this.showOverlay()
+        if (this.step < 3) {
+          this.showOverlay()
+        }
+      },
+      recordVdo: function () {
+        this.can_rec = false
+        var options = {
+          mimeType: 'video/webm', // or video/webm\;codecs=h264 or video/webm\;codecs=vp9
+          audioBitsPerSecond: 128000,
+          videoBitsPerSecond: 128000,
+          bitsPerSecond: 128000 // if this line is provided, skip above two
+        }
+        this.recordRTC = RecordRTC(window.stream, options)
+        this.recordRTC.startRecording()
+
+        this.randomText = this.arr_txt[0]
+        setTimeout(() => { this.randomText = '' }, 1000)
+        setTimeout(() => { this.randomText = this.arr_txt[1] }, 1300)
+        setTimeout(() => { this.randomText = '' }, 2900)
+        setTimeout(() => { this.randomText = this.arr_txt[2] }, 3200)
+        setTimeout(() => { this.randomText = '' }, 5000)
+        setTimeout(() => {
+          this.recordRTC.stopRecording((audioVideoWebMURL) => {
+            var blob = this.recordRTC.getBlob()
+            // alert(blob.size + ' ' + blob.type)
+            this.recordRTC.save('eark.webm')
+          })
+        }, 5100)
       },
       showOverlay: function () {
+        this.showCardOverlay = this.showRecOverlay = false
         if (this.step === 1) {
           this.showCardOverlay = true
           setTimeout(() => { this.showCardOverlay = false }, 6000)
         }
+        if (this.step === 3) {
+          this.showRecOverlay = true
+        }
       },
       setActiveCam: function (camId) {
         if (camId) {
-          window.chvdo1(camId)
+          window.chvdo1(camId, this.step === 3)
           var vdoDev = document.getElementById('video_dev')
           // sync up dropdown
           for (var i = 0; i < vdoDev.length; i++) {
@@ -238,7 +323,7 @@
       },
       savePicture2: function () {
         var n = 0
-        if (this.step === 3) {
+        if (this.step === 4) {
           n = 1
         } else {
           n = this.step + 1
@@ -256,6 +341,36 @@
         context.drawImage(video, 0, 0, w, h)
         this.show_vdo = false
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
+      },
+      setKyc: function () {
+        this.kyc = ''
+      },
+      submit: function () {
+        var objMon = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'}
+        var dob = (Number(this.year) - 543) + '-' + objMon[this.mon] + '-' + this.day
+        var data = {firstname: this.firstname, lastname: this.lastname, dob: dob, citizenIdF: this.card_no, citizenIdB: this.laser_code}
+        var url = window.api_host + 'kyc'
+        console.log(this.user)
+        this.kyc = ''
+        var that = this
+        axios.post(
+          url,
+          data,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            console.log(response.data)
+            if (!response.data.death.valid) {
+              alert(response.data.death.stDesc)
+            } else {
+              alert('success')
+              that.kyc = response.data
+              console.log(that.kyc.tax)
+            }
+          } else {
+            alert(response.data.error_msg)
+          }
+        })
       }
     },
     beforeMount: function () {
@@ -292,7 +407,7 @@
     }
   }
 
-window.chvdo1 = function (deviceId) {
+window.chvdo1 = function (deviceId, audio) {
     if (window.stream) {
       window.stream.getTracks().forEach(function (track) {
         track.stop()
@@ -310,7 +425,8 @@ window.chvdo1 = function (deviceId) {
           minHeight: 1080,
           sourceId: deviceId
         }
-      }
+      },
+      audio: audio
     }
     // var mediaConfig = {video: {deviceId: window.vdo_dev ? {exact: window.vdo_dev} : undefined}}
     var mediaConfig = hdConstraints
