@@ -106,7 +106,13 @@
         <!-- end form -->
 
         <!-- step 1,2 and 3 -->
-		<div class="cam" id='cam' style='height:200px' v-show='step<4 && !isLoading'>
+		<div class="cam" style='height:200px' v-if='isConfirming'>
+            Did you read every word, clearly ? <br/>
+             <button @click='confirmVdo(true)'>YES</button>
+             <button @click='confirmVdo(false)'>NO</button>
+        </div>
+
+		<div class="cam" id='cam' style='height:200px' v-show='step<4 && !isLoading && !isConfirming'>
 			<center>
             <select id="video_dev" v-show="step<3" onchange="chvdo1(this[this.selectedIndex].value)"
                style="font-size:16pt">
@@ -188,6 +194,7 @@
         can_rec: false,
         showRecOverlay: false,
         recordRTC: null,
+        isConfirming: false,
         kyc: ''
       }
     },
@@ -241,8 +248,16 @@
             var blob = this.recordRTC.getBlob()
             // alert(blob.size + ' ' + blob.type)
             this.recordRTC.save('eark.webm')
+            this.isConfirming = true
           })
         }, 5100)
+      },
+      confirmVdo: function (boo) {
+        this.isConfirming = false
+        this.can_rec = true
+        if (boo) {
+          this.to(4)
+        }
       },
       showOverlay: function () {
         this.showCardOverlay = this.showRecOverlay = false
