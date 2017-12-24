@@ -278,8 +278,8 @@
         this.recordRTC.startRecording()
 
         // this.randomText = this.arr_txt[0]
-        alert(this.arr_time[0] + '/' + this.arr_time[1] + '/' + this.arr_time[2])
-        alert(this.arr_txt[0] + '/' + this.arr_txt[1] + '/' + this.arr_txt[2])
+        // alert(this.arr_time[0] + '/' + this.arr_time[1] + '/' + this.arr_time[2])
+        // alert(this.arr_txt[0] + '/' + this.arr_txt[1] + '/' + this.arr_txt[2])
         setTimeout(() => { this.randomText = this.arr_txt[0] }, this.arr_time[0] * 1000)
         setTimeout(() => { this.randomText = '' }, this.arr_time[0] * 1000 + 1500)
         setTimeout(() => { this.randomText = this.arr_txt[1] }, this.arr_time[1] * 1000)
@@ -310,8 +310,9 @@
       },
       saveVdo: function () {
         alert('saveVdo')
+        var text = this.arr_txt[0] + this.arr_txt[1] + this.arr_txt[2]
         var url = window.api_host + 'demo_vdo'
-        var data = {vdo: this.vdo}
+        var data = {vdo: this.vdo, comp_name: 'silkspan', code: text}
         axios.post(
           url,
           data,

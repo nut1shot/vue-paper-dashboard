@@ -4,13 +4,20 @@
             <center>
 			<button @click='to(1)'>[1]</button> | 
             <button @click='to(2)'>[2]</button> |
-            <button @click='to(3)'>[3]</button><BR/><BR/>
+            <button @click='to(3)'>[3]</button> |
+            <button @click='to(4)'>[4]</button><BR/><BR/>
             <font v-if='step==1' color="white">STEP1 : ID CARD</font> 
             <font v-if='step==2' color="white">STEP2 : SELFIE</font> 
             <font v-if='step==3' color="white">STEP3 : FILL-IN FORM</font> 
+            <font v-if='step==4' color="white">STEP4 : RES</font> 
             </center>
 		</div>
-
+    <div class="cam" id="form" v-if='step===4'>
+      <p>ชื่อ : {{kyc.firstname}}</p> 
+      <p>นามสกุล : {{kyc.lastname}}</p>
+      <p>วันเกิด : {{kyc.dob}}</p>
+      <p>สถานะมีชีวิต : {{kyc.death}}</p>
+    </div>
         <!-- Form in step 3 -->
 		<div class="cam" id='form' style='height:200px' v-if='step===3'>
 		   <table border='1'>
@@ -92,7 +99,13 @@
         can_cancel_cam: false,
         card_no: '',
         face_pct: '%',
-        faceId1: ''
+        faceId1: '',
+        kyc: {
+          firstname: 'Kit',
+          lastname: 'Chinvuttinunt',
+          dob: '09/01/2017',
+          death: 'ยังอยู่'
+        }
       }
     },
     methods: {

@@ -589,7 +589,7 @@
       init_websocket (key) {
         console.log('init_websocket is called')
         var that = this
-        var ws = new WebSocket('ws://creden.co:8089/', 'creden')
+        var ws = new WebSocket('ws://creden.co:8089/creden', 'creden')
         // ws = new WebSocket("wss://creden.co:4443/");
         ws.onopen = function () {
           ws.send(key)
