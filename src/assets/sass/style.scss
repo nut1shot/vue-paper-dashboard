@@ -1,0 +1,26 @@
+$b: solid 1px #f09;
+
+.db{
+	border: $b;
+	background-color: #ffddee;
+}
+.flexfullscreen{
+	// display: flex;
+	// flex-direction: column;
+	background-color: #44ff66;
+	height: 100%;
+	.fullheight{
+		height: 100%;
+		// flex: 1;
+		center{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			height: 100%;
+			#videoDiv{
+				flex:1;
+				background-color: #ff7766;
+			}
+		}
+	}
+}

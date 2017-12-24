@@ -13,6 +13,7 @@ import RegisterForm from 'src/components/Dashboard/Views/UserProfile/RegisterFor
 import Kyc from 'src/components/Dashboard/Views/Kyc.vue'
 import EkycDemo from 'src/components/Dashboard/Views/EkycDemo.vue'
 import Demo2 from 'src/components/Dashboard/Views/Demo2.vue'
+import EkycDemoFullscreen from 'src/components/Dashboard/Views/EkycDemoFullscreen.vue'
 
 const routes = [
   {
@@ -76,6 +77,11 @@ const routes = [
         component: Demo2
       }
     ]
+  },
+  {
+    path: '/ekyc_demo_fullscreen',
+    name: 'Ekyc Demo',
+    component: EkycDemoFullscreen
   },
   { path: '*', component: NotFound }
 ]
