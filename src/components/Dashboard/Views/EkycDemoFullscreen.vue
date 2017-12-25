@@ -1,34 +1,84 @@
 <template>
 	<div class="flexfullscreen">
 
-    <div class="card cam_btn" id='cam_btn' style='xheight:70px'>
-      <center>
-        <button @click='to(1)'>[1]</button> | 
-        <button @click='to(2)'>[2]</button> |
-        <button @click='to(3)'>[3]</button> |
-        <button @click='to(4)'>[4]</button><BR/><BR/>
-        <font v-if='step==1' color="white">STEP1 : ID CARD</font> 
-        <font v-if='step==2' color="white">STEP2 : SELFIE</font> 
-        <font v-if='step==3' color="white">STEP3 : Record VDO</font> 
-        <font v-if='step==4' color="white">STEP4 : FILL-IN FORM</font> 
-      </center>
-    </div>
-
 
         <!-- Loading div -->
         <div v-if='isLoading'>
           <div style='height:100px'></div><br/>
           <center>
             <button type="button" class="btn btn-wd btn-success"> 
-              <span class="btn-label"> 	  
-                <i class="fa fa-circle-o-notch fa-spin"></i> 	
+              <span class="btn-label">    
+                <i class="fa fa-circle-o-notch fa-spin"></i>  
               </span> Plase Wait ...
             </button>
           </center>
         </div>
 
+        <div class="overlay">
+          <div id='cam_btn'>
+            <center>
+              <div id="brand">000</div>
+              <div id="skip_btn">
+                <button @click='to(1)'>[1]</button> | 
+                <button @click='to(2)'>[2]</button> |
+                <button @click='to(3)'>[3]</button> |
+                <button @click='to(4)'>[4]</button>
+              </div>
+              <font v-if='step==1' color="white">STEP1 : ID CARD</font> 
+              <font v-if='step==2' color="white">STEP2 : SELFIE</font> 
+              <font v-if='step==3' color="white">STEP3 : Record VDO</font> 
+              <font v-if='step==4' color="white">STEP4 : FILL-IN FORM</font> 
+            </center>
+          </div>
+          <!-- step 1,2 and 3 -->
+          <div class="cam" v-if='isConfirming'>
+            Did you read every word, clearly ? <br/>
+            <button @click='confirmVdo(true)'>YES</button>
+            <button @click='confirmVdo(false)'>NO</button>
+          </div>
+
+          <div class="cam" v-show='step<4 && !isLoading && !isConfirming'>
+
+            <div>
+              <div class="btn-group" role="group" v-show="step<3">
+                <button type="button" class="btn btn-default">Camera 1</button>
+                <button type="button" class="btn btn-default">Camera 2</button>
+              </div>
+            </div>
+
+            <!-- reader -->
+            <span class="overlay-top" v-if="step===3">Read Texts Below clearly:<br/>
+              <span>
+                Read &gt;&gt;  <span style='background-color:red;color:white;font-size:150%'>{{randomText}}</span>
+              </span>
+            </span>
+            <!-- end -->
+            <div id='canvasOverlay'>
+              <img src='static/img/sample_card.png' v-if='showCardOverlay'>
+              <span v-if='showRecOverlay' style='color:red;font-size:150%'>Recording ...</span>
+            </div>
+
+            <div class="flexbottom">
+              <table border="0" width="100%">
+                <tr v-if="step<3">
+                 <td width='33%'><button @click='savePicture' v-if='can_save_cam'>Use this photo</button></td>
+                 <td align='center' ><button v-if='show_vdo' @click='takePicture'>Take Picture</button></td>
+                 <td width='33%' align='right'><button @click='retake' v-if='can_cancel_cam'>Retake</button></td>
+               </tr> 
+               <tr v-if="step===3">
+                 <td align='center'><button v-if='can_rec' @click='recordVdo'>REC</button></td>
+               </tr> 
+             </table>
+           </div>
+
+          </div>
+          <!-- step 1,2 and 3 --> 
+
+        </div>
+
+
         <!-- Form in step 4 -->
-        <div class="cam" id='form' v-if="step===4 && !isLoading">
+        <div class="cam fullheight" id='form' v-if="step===4 && !isLoading">
          <table v-if="kyc===''"  border='1'>
            <tr>
              <td>CARD NO</td>
@@ -106,47 +156,48 @@
      <!-- end form -->
 
      <!-- step 1,2 and 3 -->
-     <div class="cam" style='xheight:200px' v-if='isConfirming'>
+     <!-- <div class="cam fullheight" style='xheight:200px' v-if='isConfirming'>
       Did you read every word, clearly ? <br/>
       <button @click='confirmVdo(true)'>YES</button>
       <button @click='confirmVdo(false)'>NO</button>
-    </div>
+    </div> -->
 
-    <div class="cam fullheight" id='cam' style='xheight:200px' v-show='step<4 && !isLoading && !isConfirming'>
-     <center class="db">
+    <div class="cam cameracanvas" id='cam' v-show='step<4 && !isLoading && !isConfirming'>
         <!-- <select id="video_dev" v-show="step<3" onchange="chvdo1(this[this.selectedIndex].value)" style="font-size:16pt">
           <option>choose camera</option>
         </select> -->
-        <div>
+        <!-- <div>
           <div class="btn-group" role="group" v-show="step<3">
             <button type="button" class="btn btn-default">Camera 1</button>
             <button type="button" class="btn btn-default">Camera 2</button>
           </div>
-        </div>
+        </div> -->
         <!-- reader -->
-        <span v-if="step===3">Read Texts Below clearly:<br/>
+        <!-- <span class="overlay-top" v-if="step===3">Read Texts Below clearly:<br/>
           <span>
            Read &gt;&gt;  <span style='background-color:red;color:white;font-size:150%'>{{randomText}}</span>
          </span>
-       </span>
+       </span> -->
        <!-- end -->
 
        <!-- <hr/> -->
-       <div id="videoDiv" class="db">
-        <video id="video" autoplay v-show='show_vdo'></video>
-        <div id='canvasBg'>
-          <div id='canvasOverlay'>
-            <img src='static/img/sample_card.png' height='200' v-if='showCardOverlay'>
-            <span v-if='showRecOverlay' style='color:red;font-size:150%'>Recording ...</span>
-          </div>
-        </div> 
-        <canvas id="canvas" v-show='!show_vdo'></canvas>
+       <div id="videoDiv">
+         <center>
+          <video id="video" autoplay v-show='show_vdo'></video>
+          <!-- <div id='canvasBg'>
+            <div id='canvasOverlay'>
+              <img src='static/img/sample_card.png' height='200' v-if='showCardOverlay'>
+              <span v-if='showRecOverlay' style='color:red;font-size:150%'>Recording ...</span>
+            </div>
+          </div>  -->
+          <canvas id="canvas" v-show='!show_vdo'></canvas>
+          <canvas id="canvas2" v-show='false'></canvas>
+        </center>
       </div>
-
-      <canvas id="canvas2" v-show='false'></canvas>
+      
       <!-- <hr/> -->
 
-      <div style='background-color:'>
+      <!-- <div>
         <table border="0" width="100%">
           <tr v-if="step<3">
            <td width='33%'><button @click='savePicture' v-if='can_save_cam'>Use this photo</button></td>
@@ -157,9 +208,8 @@
            <td align='center'><button v-if='can_rec' @click='recordVdo'>REC</button></td>
          </tr> 
        </table>
-     </div>
+     </div> -->
 
-   </center>
  </div>
  <!-- step 1,2 and 3 --> 
 
@@ -525,30 +575,20 @@ html, body, body>div{
 }
 
 #videoDiv {
-position: relative;
+/*position: relative;*/
 }
 
 #canvasOverlay {
 /* background: green; */
 }
 
-#canvasBg {
-/* background: blue; */
+/*#canvasBg {
 position: absolute;
 top: 0;
 left: 0;
 height: 100%;
 width: 100%;
 opacity: 0.5;
-}
-
-#cam_btn {
-  background-color:grey;
-}
-#cam {
-  /* background-color:pink; */
-}
-/*body {
- color:blue;
 }*/
+
 </style>
