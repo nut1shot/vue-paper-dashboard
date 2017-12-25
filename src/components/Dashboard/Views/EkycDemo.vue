@@ -76,7 +76,7 @@
                    <td align='center' colspan='2'><button type="button" @click='submit'>SUBMIT</button></td>
 			   </tr>
            </table>	
-      
+
            <div v-if="kyc!=='' ">RESULTS : 
              <p>
                ชื่อ: {{firstname}}
@@ -99,8 +99,42 @@
              <p v-else>
                tax2: ไม่จ่ายภาษี
              </p>
+             <p v-if="isVerified">
+               verified: <i class="fa fa-check" style='color:green;'></i>
+             </p>
+             <p v-else>
+               verified: <i class="fa fa-times" style='color:red;'></i>
+             </p>
              <button type="button" class="btn btn-wd btn-success" @click='setKyc()'>BACK</button>
            </div>
+
+            <!--
+            <div v-if="dummy && kyc!==''">RESULTS : 
+                <p>
+                ชื่อ: {{firstname}}
+                </p>
+                <p>
+                นามสกุล: {{lastname}}
+                </p>
+                <p>
+                สถานะ: สถานะปกติ [มีชีวิต]
+                </p>
+                <p>
+                tax1: -
+                </p>
+                <p>
+                tax2: -
+                </p>
+                <p v-if="isVerified">
+                verified: <i class="fa fa-check" style='color:green;'></i>
+                </p>
+                <p v-else>
+                verified: <i class="fa fa-times" style='color:red;'></i>
+                </p>
+                <button type="button" class="btn btn-wd btn-success" @click='setKyc()'>BACK</button>
+           </div>
+            -->
+
         </div>
 
         <!-- end form -->
@@ -122,7 +156,7 @@
             <!-- reader -->
             <span v-if="step===3">Read Texts Below clearly:<br/>
                   <span>
-                       Read &gt;&gt;  <span style='background-color:red;color:white;font-size:150%'>{{randomText}}</span>
+                       Read &gt;&gt;  {{code}}<span style='background-color:red;color:white;font-size:150%'>{{randomText}}</span>
                   </span>
             </span>
             <!-- end -->
@@ -191,11 +225,16 @@
         year: '',
         randomText: '',
         arr_txt: ['1234', 'ABCK', 'GF13'],
+        arr_time: [3, 13, 19],
         can_rec: false,
         showRecOverlay: false,
         recordRTC: null,
         isConfirming: false,
-        kyc: ''
+        kyc: '',
+        isVerified: false,
+        dummy: false,
+        code: '',
+        vdo: ''
       }
     },
     methods: {
@@ -227,6 +266,7 @@
         }
       },
       recordVdo: function () {
+        var that = this
         this.can_rec = false
         var options = {
           mimeType: 'video/webm', // or video/webm\;codecs=h264 or video/webm\;codecs=vp9
@@ -237,28 +277,54 @@
         this.recordRTC = RecordRTC(window.stream, options)
         this.recordRTC.startRecording()
 
-        this.randomText = this.arr_txt[0]
-        setTimeout(() => { this.randomText = '' }, 1000)
-        setTimeout(() => { this.randomText = this.arr_txt[1] }, 1300)
-        setTimeout(() => { this.randomText = '' }, 2900)
-        setTimeout(() => { this.randomText = this.arr_txt[2] }, 3200)
-        setTimeout(() => { this.randomText = '' }, 5000)
+        // this.randomText = this.arr_txt[0]
+        // alert(this.arr_time[0] + '/' + this.arr_time[1] + '/' + this.arr_time[2])
+        // alert(this.arr_txt[0] + '/' + this.arr_txt[1] + '/' + this.arr_txt[2])
+        setTimeout(() => { this.randomText = this.arr_txt[0] }, this.arr_time[0] * 1000)
+        setTimeout(() => { this.randomText = '' }, this.arr_time[0] * 1000 + 1500)
+        setTimeout(() => { this.randomText = this.arr_txt[1] }, this.arr_time[1] * 1000)
+        setTimeout(() => { this.randomText = '' }, this.arr_time[1] * 1000 + 1500)
+        setTimeout(() => { this.randomText = this.arr_txt[2] }, this.arr_time[2] * 1000)
+        setTimeout(() => { this.randomText = '' }, this.arr_time[2] * 1000 + 1500)
         setTimeout(() => {
           this.recordRTC.stopRecording((audioVideoWebMURL) => {
-            var blob = this.recordRTC.getBlob()
+            // var blob = this.recordRTC.getBlob()
             // alert(blob.size + ' ' + blob.type)
-            this.recordRTC.save('eark.webm')
-            this.isConfirming = true
+            // this.recordRTC.save('eark.webm')
+            this.recordRTC.getDataURL(function (dataURL) {
+              that.vdo = dataURL.substring(dataURL.indexOf(',') + 1)
+              alert(that.vdo)
+              that.isConfirming = true
+            })
           })
-        }, 5100)
+        }, 15000)
       },
       confirmVdo: function (boo) {
         this.isConfirming = false
         this.can_rec = true
         if (boo) {
           window.video.pause()
+          this.saveVdo()
           this.to(4)
         }
+      },
+      saveVdo: function () {
+        alert('saveVdo')
+        var text = this.arr_txt[0] + this.arr_txt[1] + this.arr_txt[2]
+        var url = window.api_host + 'demo_vdo'
+        var data = {vdo: this.vdo, comp_name: 'silkspan', code: text}
+        axios.post(
+          url,
+          data,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            console.log(response.data)
+            alert(response.data)
+          } else {
+            alert(error)
+          }
+        })
       },
       showOverlay: function () {
         this.showCardOverlay = this.showRecOverlay = false
@@ -288,6 +354,23 @@
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
         this.showOverlay()
       },
+      getCode: function () {
+        var url = window.api_host + 'get_code'
+        var data = {}
+        axios.post(
+          url,
+          data,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            console.log(response.data)
+            this.arr_txt = response.data.arr_txt
+            this.arr_time = response.data.arr_time
+          } else {
+            alert(error)
+          }
+        })
+      },
       savePicture: function (n) {
         var canvas = document.getElementById('canvas2')
         var img = canvas.toDataURL('image/png')
@@ -316,7 +399,7 @@
                 that.card_no = response.data.card_id
                 that.day = response.data.dob.day
                 that.mon = response.data.dob.mon
-                that.year = Number(response.data.dob.year) + 543
+                that.year = response.data.dob.year
               } else {
                 alert('unnable to detect id card information, please retake photo.')
                 that.retake()
@@ -360,6 +443,7 @@
       },
       setKyc: function () {
         this.kyc = ''
+        this.isVerified = false
       },
       submit: function () {
         var objMon = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'}
@@ -369,24 +453,38 @@
         console.log(this.user)
         this.kyc = ''
         var that = this
-        axios.post(
-          url,
-          data,
-          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-        ).then((response) => {
-          if (response.data.success) {
-            console.log(response.data)
-            if (!response.data.death.valid) {
-              alert(response.data.death.stDesc)
-            } else {
-              alert('success')
-              that.kyc = response.data
-              console.log(that.kyc.tax)
-            }
-          } else {
-            alert(response.data.error_msg)
+        that.isLoading = true
+        if (that.dummy) {
+          setTimeout(function () { that.isLoading = false }, 3000)
+          that.kyc = {success: true}
+          if (Number(this.face_pct) > 50) {
+            that.isVerified = true
           }
-        })
+        } else {
+          axios.post(
+            url,
+            data,
+            { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+          ).then((response) => {
+            that.isLoading = false
+            if (response.data.success) {
+              console.log(response.data)
+              if (!response.data.death.valid) {
+                alert(response.data.death.stDesc)
+                that.kyc = response.data
+              } else {
+                alert('success')
+                that.kyc = response.data
+                if (Number(this.face_pct) > 50) {
+                  that.isVerified = true
+                }
+                console.log(that.kyc.tax)
+              }
+            } else {
+              alert(response.data.error_msg)
+            }
+          })
+        }
       }
     },
     beforeMount: function () {
@@ -420,6 +518,7 @@
         that.showOverlay()
       })
       initCameraDropdown(this)
+      this.getCode()
     }
   }
 
