@@ -522,7 +522,8 @@
       })
       this.getCode()
       var app = this
-      if (this.platform && this.platform.is('cordova')) {
+      if ((this.platform && this.platform.is('cordova'))) {
+        alert(1234)
       } else {
         initCameraDropdown(app)
       }
