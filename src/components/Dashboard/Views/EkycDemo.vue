@@ -204,9 +204,10 @@
   export default {
     data () {
       return {
+        ref_no: '',
         isLoading: false,
         showCardOverlay: false,
-        id: '001',
+        id: '',
         results: '',
         step: 1,
         show_vdo: true,
@@ -312,7 +313,7 @@
         alert('saveVdo')
         var text = this.arr_txt[0] + this.arr_txt[1] + this.arr_txt[2]
         var url = window.api_host + 'demo_vdo'
-        var data = {vdo: this.vdo, comp_name: 'silkspan', code: text}
+        var data = {id: this.id, vdo: this.vdo, comp_name: 'silkspan', code: text, ref_no: this.ref_no, arr_txt: this.arr_txt, arr_time: this.arr_time}
         axios.post(
           url,
           data,
@@ -366,6 +367,7 @@
             console.log(response.data)
             this.arr_txt = response.data.arr_txt
             this.arr_time = response.data.arr_time
+            this.id = response.data.id
           } else {
             alert(error)
           }
@@ -490,6 +492,7 @@
     beforeMount: function () {
     },
     mounted: function () {
+      this.ref_no = this.$route.query.ref_no
       var that = this
       document.getElementById('video').addEventListener('play', function () {
         var w = video.videoWidth
