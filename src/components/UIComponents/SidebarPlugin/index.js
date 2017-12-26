@@ -12,6 +12,11 @@ const SidebarStore = {
       name: 'My Profile',
       icon: 'ti-user',
       path: '/admin/profile'
+    },
+    {
+      name: 'Tmp Ekyc',
+      icon: 'ti-user',
+      path: '/admin/ekyc_demo'
     }
     /*,
     {
