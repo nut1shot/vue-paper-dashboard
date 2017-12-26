@@ -520,8 +520,12 @@
         ov.style.height = (h - 0) + 'px'
         that.showOverlay()
       })
-      initCameraDropdown(this)
       this.getCode()
+      var app = this
+      if (this.platform && this.platform.is('cordova')) {
+      } else {
+        initCameraDropdown(app)
+      }
     }
   }
 
