@@ -437,8 +437,10 @@
         // hidden webcam
         var ctx2 = document.getElementById('canvas2').getContext('2d')
         ctx2.drawImage(video, 0, 0, w, h)
-        w = parseInt(w / 5.0)
-        h = parseInt(h / 5.0)
+        w = parseInt(w / 10.0)
+        h = parseInt(h / 10.0)
+        h = 300
+        w = (h * 4) / 3
         context.drawImage(video, 0, 0, w, h)
         this.show_vdo = false
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
@@ -500,8 +502,8 @@
 
         /* handle w,h = 0 when play event is fired AFTER the 1ST time
         todo : find out why */
-        // alert('video w/h' + w + ' x ' + h)
-        if (w < 1) return
+        alert('video w/h' + w + ' x ' + h)
+        // if (w < 1) return
 
         // hidden canvas
         var c2 = document.getElementById('canvas2')
@@ -511,8 +513,10 @@
         // canvas overlay
         var ov = document.getElementById('canvasOverlay')
 
-        w = parseInt(w / 5.0)
-        h = parseInt(h / 5.0)
+        w = parseInt(w / 10.0)
+        h = parseInt(h / 10.0)
+        h = 300
+        w = (h * 4) / 3
 
         canvas.width = video.width = w
         canvas.height = video.height = h
@@ -522,8 +526,10 @@
       })
       this.getCode()
       var app = this
-      if ((this.platform && this.platform.is('cordova'))) {
-        alert(1234)
+      var isCordovaApp = !!window.cordova
+      console.log('isCordova' + isCordovaApp)
+      if (isCordovaApp) {
+        initCameraPermissions(app)
       } else {
         initCameraDropdown(app)
       }
@@ -560,6 +566,17 @@ window.chvdo1 = function (deviceId, audio) {
       video.play()
     })
 }
+
+function initCameraPermissions (app) {
+    console.log('initCameraPermissions ' + app)
+    var permissions = cordova.plugins.permissions
+    permissions.hasPermission(permissions.CAMERA, (status) => {
+      console.log('status.hasPermission = ' + status.hasPermission)
+      permissions.requestPermissions([permissions.CAMERA], () => { initCameraDropdown(app) }
+      , () => { alert('Please allow Camera access!!') })
+    })
+}
+
 function initCameraDropdown (app) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
       alert('Only Android device is supported on this demo!!!\n\nDetails : \nenumerateDevices() not supported.')
