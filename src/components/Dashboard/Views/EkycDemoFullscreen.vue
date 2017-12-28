@@ -163,7 +163,7 @@
     </div> -->
 
     <div class="cam cameracanvas" id='cam' v-show='step<4 && !isLoading && !isConfirming'>
-        <!-- <select id="video_dev" v-show="step<3" onchange="chvdo1(this[this.selectedIndex].value)" style="font-size:16pt">
+        <!-- <select id="video_dev" v-show="step<3" onchange="chvdo2(this[this.selectedIndex].value)" style="font-size:16pt">
           <option>choose camera</option>
         </select> -->
         <!-- <div>
@@ -325,7 +325,7 @@
       },
       setActiveCam: function (camId) {
         if (camId) {
-          window.chvdo1(camId, this.step === 3)
+          window.chvdo2(camId, this.step === 3)
           var vdoDev = document.getElementById('video_dev')
           // sync up dropdown
           for (var i = 0; i < vdoDev.length; i++) {
@@ -476,7 +476,7 @@
     }
   }
 
-window.chvdo1 = function (deviceId, audio) {
+window.chvdo2 = function (deviceId, audio) {
     if (window.stream) {
       window.stream.getTracks().forEach(function (track) {
         track.stop()
@@ -550,7 +550,7 @@ function initVideo () {
       window.context = canvas.getContext('2d')
       window.video = document.getElementById('video')
       var vdoDev = document.getElementById('video_dev')
-      window.chvdo1(vdoDev[vdoDev.selectedIndex].value)
+      window.chvdo2(vdoDev[vdoDev.selectedIndex].value)
     } else {
       canvas.width = video.width = 1
       canvas.height = video.height = 1
