@@ -434,13 +434,12 @@
       takePicture: function () {
         var w = window.video.videoWidth
         var h = window.video.videoHeight
+        console.log('B: video w/h' + w + ' x ' + h)
         // hidden webcam
         var ctx2 = document.getElementById('canvas2').getContext('2d')
         ctx2.drawImage(video, 0, 0, w, h)
-        w = parseInt(w / 10.0)
-        h = parseInt(h / 10.0)
-        h = 300
-        w = (h * 4) / 3
+        w = parseInt(w / 5.0)
+        h = parseInt(h / 5.0)
         context.drawImage(video, 0, 0, w, h)
         this.show_vdo = false
         this.can_save_cam = this.can_cancel_cam = !this.show_vdo
@@ -496,14 +495,16 @@
     mounted: function () {
       this.ref_no = this.$route.query.ref_no
       var that = this
-      document.getElementById('video').addEventListener('play', function () {
+      document.getElementById('video').addEventListener('playing', function () {
         var w = video.videoWidth
         var h = video.videoHeight
+        console.log('A::: video w/h' + w + ' x ' + h)
 
         /* handle w,h = 0 when play event is fired AFTER the 1ST time
         todo : find out why */
-        alert('video w/h' + w + ' x ' + h)
-        // if (w < 1) return
+        if (w < 1) return
+        w = parseInt(w / 5.0)
+        h = parseInt(h / 5.0)
 
         // hidden canvas
         var c2 = document.getElementById('canvas2')
@@ -512,12 +513,6 @@
 
         // canvas overlay
         var ov = document.getElementById('canvasOverlay')
-
-        w = parseInt(w / 10.0)
-        h = parseInt(h / 10.0)
-        h = 300
-        w = (h * 4) / 3
-
         canvas.width = video.width = w
         canvas.height = video.height = h
         ov.style.width = (w - 0) + 'px'
@@ -572,7 +567,7 @@ function initCameraPermissions (app) {
     var permissions = cordova.plugins.permissions
     permissions.hasPermission(permissions.CAMERA, (status) => {
       console.log('status.hasPermission = ' + status.hasPermission)
-      permissions.requestPermissions([permissions.CAMERA], () => { initCameraDropdown(app) }
+      permissions.requestPermissions([permissions.CAMERA, permissions.RECORD_AUDIO], () => { initCameraDropdown(app) }
       , () => { alert('Please allow Camera access!!') })
     })
 }
