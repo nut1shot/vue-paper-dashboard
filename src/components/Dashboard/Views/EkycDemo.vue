@@ -270,11 +270,14 @@
         var that = this
         this.can_rec = false
         var options = {
-          mimeType: 'video/webm', // or video/webm\;codecs=h264 or video/webm\;codecs=vp9
+          mimeType: 'video/webm', // or video/webm\;codecs=h264 or video/webm\;codecs=vp9,
+          recorderType: MediaStreamRecorder,
           audioBitsPerSecond: 128000,
           videoBitsPerSecond: 128000,
           bitsPerSecond: 128000 // if this line is provided, skip above two
         }
+        console.log('new record VDO options' + JSON.stringify(options))
+        console.log('MediaStreamRecorder = ' + MediaStreamRecorder)
         this.recordRTC = RecordRTC(window.stream, options)
         this.recordRTC.startRecording()
 
@@ -291,10 +294,11 @@
           this.recordRTC.stopRecording((audioVideoWebMURL) => {
             // var blob = this.recordRTC.getBlob()
             // alert(blob.size + ' ' + blob.type)
-            // this.recordRTC.save('eark.webm')
+            this.recordRTC.save('eark.webm')
             this.recordRTC.getDataURL(function (dataURL) {
               that.vdo = dataURL.substring(dataURL.indexOf(',') + 1)
-              alert(that.vdo)
+              console.log('vdolen = ' + that.vdo.length)
+              // alert(that.vdo)
               that.isConfirming = true
             })
           })
@@ -310,7 +314,6 @@
         }
       },
       saveVdo: function () {
-        alert('saveVdo')
         var text = this.arr_txt[0] + this.arr_txt[1] + this.arr_txt[2]
         var url = window.api_host + 'demo_vdo'
         var data = {id: this.id, vdo: this.vdo, comp_name: 'silkspan', code: text, ref_no: this.ref_no, arr_txt: this.arr_txt, arr_time: this.arr_time}
@@ -321,7 +324,7 @@
         ).then((response) => {
           if (response.data.success) {
             console.log(response.data)
-            alert(response.data)
+            // alert(response.data)
           } else {
             alert(error)
           }
@@ -338,6 +341,7 @@
         }
       },
       setActiveCam: function (camId) {
+        console.log('setActiveCam is called ... ' + camId)
         if (camId) {
           window.chvdo1(camId, this.step === 3)
           var vdoDev = document.getElementById('video_dev')
@@ -605,6 +609,13 @@ function initCameraDropdown (app) {
 
       var vdoDev = document.getElementById('video_dev')
       vdoDev.innerHTML = h
+      /* auto assign frontCam and backCam if we can't get device.label */
+      if (app.backCam === null || app.frontCam === null) {
+        if (vdoDev.length > 0)app.frontCam = vdoDev[0].value
+        if (vdoDev.length > 1)app.backCam = vdoDev[1].value
+        console.log('Auto assigned front/back camera')
+      }
+
       initVideo()
     })
 }
