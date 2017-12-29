@@ -14,6 +14,7 @@ import Kyc from 'src/components/Dashboard/Views/Kyc.vue'
 import EkycDemo from 'src/components/Dashboard/Views/EkycDemo.vue'
 import Demo2 from 'src/components/Dashboard/Views/Demo2.vue'
 import EkycDemoFullscreen from 'src/components/Dashboard/Views/EkycDemoFullscreen.vue'
+import EkycAdmin from 'src/components/Dashboard/Views/EkycAdmin.vue'
 
 const routes = [
   {
@@ -75,6 +76,11 @@ const routes = [
         path: 'demo2',
         name: 'Ekyc Demo2....',
         component: Demo2
+      },
+      {
+        path: 'ekyc_admin',
+        name: 'Ekyc Admin',
+        component: EkycAdmin
       }
     ]
   },
