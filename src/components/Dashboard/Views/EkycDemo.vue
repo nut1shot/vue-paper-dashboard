@@ -272,6 +272,7 @@
         var options = {
           mimeType: 'video/webm', // or video/webm\;codecs=h264 or video/webm\;codecs=vp9,
           recorderType: MediaStreamRecorder,
+          video: {width: video.width, height: video.height},
           audioBitsPerSecond: 128000,
           videoBitsPerSecond: 128000,
           bitsPerSecond: 128000 // if this line is provided, skip above two
@@ -292,9 +293,6 @@
         setTimeout(() => { this.randomText = '' }, this.arr_time[2] * 1000 + 1500)
         setTimeout(() => {
           this.recordRTC.stopRecording((audioVideoWebMURL) => {
-            // var blob = this.recordRTC.getBlob()
-            // alert(blob.size + ' ' + blob.type)
-            this.recordRTC.save('eark.webm')
             this.recordRTC.getDataURL(function (dataURL) {
               that.vdo = dataURL.substring(dataURL.indexOf(',') + 1)
               console.log('vdolen = ' + that.vdo.length)
@@ -441,7 +439,7 @@
         console.log('B: video w/h' + w + ' x ' + h)
         // hidden webcam
         var ctx2 = document.getElementById('canvas2').getContext('2d')
-        ctx2.drawImage(video, 0, 0, w, h)
+        ctx2.drawImage(video, 0, 0, w / 2, h / 2)
         w = parseInt(w / 5.0)
         h = parseInt(h / 5.0)
         context.drawImage(video, 0, 0, w, h)
@@ -506,14 +504,21 @@
 
         /* handle w,h = 0 when play event is fired AFTER the 1ST time
         todo : find out why */
-        if (w < 1) return
-        w = parseInt(w / 5.0)
-        h = parseInt(h / 5.0)
+        if (w < 1) {
+          alert('Found VDO size <1')
+          return
+        }
 
         // hidden canvas
         var c2 = document.getElementById('canvas2')
-        c2.width = w
-        c2.height = h
+        c2.width = w / 2
+        c2.height = h / 2
+
+        // w===720 means we're in step 3
+        if (w > 720) {
+          w = parseInt(w / 5.0)
+          h = parseInt(h / 5.0)
+        }
 
         // canvas overlay
         var ov = document.getElementById('canvasOverlay')
@@ -544,11 +549,10 @@ window.chvdo1 = function (deviceId, audio) {
 
     video.pause()
     window.vdo_dev = deviceId
+
     var hdConstraints = {
       video: {
         mandatory: {
-          // minWidth: 1280,
-          // minHeight: 720
           minWidth: 1920,
           minHeight: 1080,
           sourceId: deviceId
@@ -556,8 +560,24 @@ window.chvdo1 = function (deviceId, audio) {
       },
       audio: audio
     }
-    // var mediaConfig = {video: {deviceId: window.vdo_dev ? {exact: window.vdo_dev} : undefined}}
+
+    if (audio === true) {
+      hdConstraints = {
+        video: {
+          mandatory: {
+            minWidth: 320,
+            minHeight: 240,
+            maxWidth: 320,
+            maxHeight: 240,
+            sourceId: deviceId
+          }
+        },
+        audio: audio
+      }
+    }
+
     var mediaConfig = hdConstraints
+    console.log('dev hdConctraints' + JSON.stringify(hdConstraints))
 
     navigator.mediaDevices.getUserMedia(mediaConfig).then(function (stream) {
       video.src = window.URL.createObjectURL(stream)
