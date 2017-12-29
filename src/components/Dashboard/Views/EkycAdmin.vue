@@ -28,13 +28,18 @@
     </div>
 
     <div v-else-if="state==2">
-      <video width="640" height="480" controls preload>
+      <video width="640" height="480" controls autoplay>
         <source :src="src_vdo" type="video/webm" >
         <track label="English" kind="subtitles" srclang="en" :src="src_sub" default>
         <track label="Thai" kind="subtitles" srclang="th" :src="src_sub" >
         Your browser does not support the video tag.
       </video>
-      <br><br><button v-on:click="goState(1)" class="btn btn-info btn-fill btn-wd">Back</button>
+      <br><br>
+        <button v-on:click="goState(1)" class="btn btn-success btn-fill btn-wd">Pass</button>      
+        <button v-on:click="goState(1)" class="btn btn-danger btn-fill btn-wd">Fail</button>
+        <div style="text-align:right;">     
+            <button v-on:click="goState(1)">Back</button>
+        </div>
     </div>
 </template>
 <script type="text/javascript">
@@ -66,6 +71,11 @@
     },
     methods: {
       detail (item) {
+        console.log(item['kyc'])
+        console.log(item['isVerified'])
+        if (item['kyc'] !== undefined) {
+          alert(item['kyc'].id_card.citizenIdF)
+        }
         this.src_vdo = 'https://creden.co/face/images/vdo/' + item['filename'] + '.webm'
         this.src_sub = 'https://creden.co/face/images/vdo/' + item['filename'] + '.vtt'
         this.goState(2)

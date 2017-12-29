@@ -599,7 +599,7 @@
           console.log(receivedMsg)
           var data = JSON.parse(receivedMsg)
           console.log(data)
-          that.statement(data)
+          that.getStatement(data.key)
         }
         ws.onclose = function () {
           alert('connection is close')
@@ -660,24 +660,40 @@
           return value
         }
       },
-      statement (data) {
+      getStatement (key) {
+        var that = this
+        var url = window.api_host + 'get_statement'
+        var data = {'key': key}
+        axios.post(
+          url,
+          data,
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        ).then((response) => {
+          if (response.data.success) {
+            that.chkBank(response.data)
+          } else {
+            alert(data.error_msg)
+          }
+        })
+      },
+      chkBank (data) {
         if (data.job_type === 'kbank') {
           this.$store.state.bank.kbank = false
         } else if (data.job_type === 'scb') {
           this.$store.state.bank.scb = false
         }
-        if (data.success) {
-          this.summary(data.data, data.job_type)
-        } else {
-          alert(data.error_msg)
-        }
+        this.summary(data.data, data.job_type)
       },
       summary (data, jobType) {
         var that = this
         if (jobType === 'kbank') {
           this.kbank.data = []
+          this.kbank.totalIn = 0
+          this.kbank.totalOut = 0
         } else if (jobType === 'scb') {
           this.scb.data = []
+          this.scb.totalIn = 0
+          this.scb.totalOut = 0
         }
         data.map(function (current, index, array) {
           current.m = current.date.substring(3, 5)
@@ -714,6 +730,7 @@
         this.state = 3
       },
       searchJob () {
+        var that = this
         var url = window.api_host + 'jobs'
         var data = {'key': this.user.email + ':scb'}
         axios.post(
@@ -721,8 +738,9 @@
           data,
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         ).then((response) => {
-          if (response.success) {
+          if (response.data.success) {
             alert('Statement SCB Complete')
+            that.chkBank(response.data)
           }
         })
       }

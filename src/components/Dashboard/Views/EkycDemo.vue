@@ -73,7 +73,9 @@
                    <td><input type='' v-model='laser_code'></td>
 			   </tr>
                <tr>
-                   <td align='center' colspan='2'><button type="button" @click='submit'>SUBMIT</button></td>
+                   <td align='center' colspan='2'><button type="button" @click='submit'>SUBMIT</button>
+                   </td>
+
 			   </tr>
            </table>	
 
@@ -106,6 +108,10 @@
                verified: <i class="fa fa-times" style='color:red;'></i>
              </p>
              <button type="button" class="btn btn-wd btn-success" @click='setKyc()'>BACK</button>
+            <br><br>
+            <p v-if="is_silkspan"  colspan='2'>
+                <button type="button" class="btn btn-wd btn-success" @click='goToSilkspan()'>Complete Back To Silkspan</button>
+            </p>
            </div>
 
             <!--
@@ -205,6 +211,7 @@
     data () {
       return {
         ref_no: '',
+        is_silkspan: false,
         isLoading: false,
         showCardOverlay: false,
         id: '',
@@ -321,7 +328,7 @@
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         ).then((response) => {
           if (response.data.success) {
-            console.log(response.data)
+            console.log(response.data.data.id)
             // alert(response.data)
           } else {
             alert(error)
@@ -450,10 +457,13 @@
         this.kyc = ''
         this.isVerified = false
       },
+      goToSilkspan: function () {
+        window.location.href = 'http://sm.hjkl.ninja:8124/silkspan/silkspan2.html?ref_no=' + this.ref_no
+      },
       submit: function () {
         var objMon = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'}
         var dob = (Number(this.year) - 543) + '-' + objMon[this.mon] + '-' + this.day
-        var data = {firstname: this.firstname, lastname: this.lastname, dob: dob, citizenIdF: this.card_no, citizenIdB: this.laser_code}
+        var data = {firstname: this.firstname, lastname: this.lastname, dob: dob, citizenIdF: this.card_no, citizenIdB: this.laser_code, id: this.id, face_pct: this.face_pct}
         var url = window.api_host + 'kyc'
         console.log(this.user)
         this.kyc = ''
@@ -496,6 +506,7 @@
     },
     mounted: function () {
       this.ref_no = this.$route.query.ref_no
+      this.is_silkspan = this.$route.query.is_silkspan
       var that = this
       document.getElementById('video').addEventListener('playing', function () {
         var w = video.videoWidth
