@@ -1,7 +1,5 @@
 <template>
 	<div class="flexfullscreen">
-
-
         <!-- Loading div -->
         <div v-if='isLoading'>
           <div style='height:100px'></div><br/>
@@ -14,22 +12,29 @@
           </center>
         </div>
 
-        <div class="overlay">
-          <div id='cam_btn'>
-            <center>
-              <div id="brand">000</div>
-              <div id="skip_btn">
-                <button @click='to(1)'>[1]</button> | 
-                <button @click='to(2)'>[2]</button> |
-                <button @click='to(3)'>[3]</button> |
-                <button @click='to(4)'>[4]</button>
-              </div>
-              <font v-if='step==1' color="white">STEP1 : ID CARD</font> 
-              <font v-if='step==2' color="white">STEP2 : SELFIE</font> 
-              <font v-if='step==3' color="white">STEP3 : Record VDO</font> 
-              <font v-if='step==4' color="white">STEP4 : FILL-IN FORM</font> 
-            </center>
-          </div>
+        <div id='header'>
+          <center>
+            <div id="brand">000</div>
+
+
+            <div id="skip_btn">
+              <button @click='to(1)'>[1]</button> | 
+              <button @click='to(2)'>[2]</button> |
+              <button @click='to(3)'>[3]</button> |
+              <button @click='to(4)'>[4]</button>
+            </div>
+            <font v-if='step==1' color="white">STEP1 : ID CARD</font> 
+            <font v-if='step==2' color="white">STEP2 : SELFIE</font> 
+            <font v-if='step==3' color="white">STEP3 : Record VDO</font> 
+            <font v-if='step==4' color="white">STEP4 : FILL-IN FORM</font> 
+
+            
+          </center>
+        </div>
+
+
+        <div class="overlay" v-if="step<4">
+          
           <!-- step 1,2 and 3 -->
           <div class="cam" v-if='isConfirming'>
             Did you read every word, clearly ? <br/>
@@ -45,28 +50,39 @@
                 <button type="button" class="btn btn-default">Camera 2</button>
               </div>
             </div>
-
+              
+              <img class="idcardoverlay" src="static/img/idcard.svg" v-if='showCardOverlay'>
+            
             <!-- reader -->
-            <span class="overlay-top" v-if="step===3">Read Texts Below clearly:<br/>
+            <span class="overlay-top readtext" v-if="step===3">Read Texts Below clearly:<br/>
               <span>
-                Read &gt;&gt;  <span style='background-color:red;color:white;font-size:150%'>{{randomText}}</span>
+                Read <i class="fa fa-chevron-right"></i>
+                <span>{{randomText}}&nbsp;</span>
               </span>
             </span>
             <!-- end -->
             <div id='canvasOverlay'>
-              <img src='static/img/sample_card.png' v-if='showCardOverlay'>
+              <!-- <img src='static/img/sample_card.png' v-if='showCardOverlay'> -->
               <span v-if='showRecOverlay' style='color:red;font-size:150%'>Recording ...</span>
             </div>
 
             <div class="flexbottom">
               <table border="0" width="100%">
                 <tr v-if="step<3">
-                 <td width='33%'><button @click='savePicture' v-if='can_save_cam'>Use this photo</button></td>
-                 <td align='center' ><button v-if='show_vdo' @click='takePicture'>Take Picture</button></td>
-                 <td width='33%' align='right'><button @click='retake' v-if='can_cancel_cam'>Retake</button></td>
+                 <td width='33%'>
+                  <button class="btn" @click='savePicture' v-if='can_save_cam'>Use this photo</button>
+                </td>
+                 <td align='center' >
+                  <button class="btn shutter" v-if='show_vdo' @click='takePicture'>Take Picture</button>
+                </td>
+                 <td width='33%' align='right'>
+                  <button class="btn" @click='retake' v-if='can_cancel_cam'>Retake</button>
+                </td>
                </tr> 
                <tr v-if="step===3">
-                 <td align='center'><button v-if='can_rec' @click='recordVdo'>REC</button></td>
+                 <td align='center'>
+                  <button class="btn shutter" v-if='can_rec' @click='recordVdo'>REC</button>
+                </td>
                </tr> 
              </table>
            </div>
@@ -76,31 +92,33 @@
 
         </div>
 
-
         <!-- Form in step 4 -->
         <div class="cam fullheight" id='form' v-if="step===4 && !isLoading">
-         <table v-if="kyc===''"  border='1'>
+
+         <table v-if="kyc===''" id="kyctable" class="table form-group">
+          <tbody>
            <tr>
              <td>CARD NO</td>
-             <td><input v-model='card_no'></td>
+             <td><input class="form-control" v-model='card_no'></td>
            </tr>
            <tr>
              <td>Face Matched</td>
-             <td><input v-model='face_pct' size='6'></td>
+             <td><input  class="form-control" v-model='face_pct' size='6'></td>
            </tr>
            <tr>
              <td>FName</td>
-             <td><input type='' v-model='firstname'></td>
+             <td><input  class="form-control" type='' v-model='firstname'></td>
            </tr>
            <tr>
              <td>LName</td>
-             <td><input type='' v-model='lastname'></td>
+             <td><input  class="form-control" type='' v-model='lastname'></td>
            </tr>
            <tr>
              <td>Date Of Birth(31/12/2522)</td>
-             <td>
-              <input v-model='day' size='4'>
-              <select v-model='mon'>
+             <td class="form-inline">
+              <!-- <div class="form-group"> -->
+              <input  class="form-control" v-model='day' size='4'>
+              <select  class="form-control" v-model='mon'>
                 <option value="">เดือน</option>    
                 <option value="Jan">ม.ค.</option>
                 <option value="Feb">ก.พ.</option>
@@ -115,16 +133,18 @@
                 <option value="Nov">พ.ย.</option>
                 <option value="Dec">ธ.ค.</option>
               </select>
-              <input v-model='year' size='6'>
+              <input class="form-control" v-model='year' size='6'>
+              <!-- </div> -->
             </td>
           </tr>
           <tr>
            <td>LASER CODE</td>
-           <td><input type='' v-model='laser_code'></td>
+           <td><input class="form-control" type='' v-model='laser_code'></td>
          </tr>
          <tr>
-           <td align='center' colspan='2'><button type="button" @click='submit'>SUBMIT</button></td>
+           <td align='center' colspan='2'><button type="button" @click='submit' class="btn">SUBMIT</button></td>
          </tr>
+        </tbody>
        </table>	
 
        <div v-if="kyc!=='' ">RESULTS : 
@@ -572,6 +592,8 @@ function vdoW () {
 
 html, body, body>div{
   height: 100%;
+/*  padding: 0;
+  margin: 0;*/
 }
 
 #videoDiv {
